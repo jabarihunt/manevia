@@ -1,0 +1,52 @@
+<?php namespace Manevia;
+
+    /********************************************************************************
+     * [MODEL_NAME_UPPERCASE] MODEL
+     * PHP version 7.1
+     * Auto Generated via ../cli/model_builder_docs/BaseModelBuilder.php
+     ********************************************************************************/
+
+        final class [MODEL_NAME] extends [MODEL_NAME]Model
+        {
+            /********************************************************************************
+             * CLASS CONSTRUCTOR
+             * @param array $data
+             ********************************************************************************/
+
+                protected function __construct(Array $data) {parent::__construct($data);}
+
+            /********************************************************************************
+             * OVERRIDE CRUD METHODS
+             * Place any methods that you wish to override below. The method list includes:
+             *
+             * - public static function create(Array $data)
+             * - public static function get(Integer $id)
+             * - public function update(Array $data)
+             * - public function delete(Mixed $idOrIds)
+             ********************************************************************************/
+
+
+
+            /********************************************************************************
+             * CRUD CALLBACK METHODS
+             * Override any CRUD method callbacks below. The method list includes:
+             *
+             * - protected static function beforeCreate(Array $data) {return $data;}
+             * - protected function afterCreate() {}
+             * - protected static function beforeGet($id) {return $id;}
+             * - protected function afterGet() {}
+             * - protected function beforeUpdate(Array $data) {return $data;}
+             * - protected function afterUpdate() {}
+             * - protected function beforeDelete() {}
+             * - protected function afterDelete() {}
+             ********************************************************************************/
+
+
+
+            /********************************************************************************
+             * CUSTOM METHODS
+             * Place any custom methods that you need below...
+             ********************************************************************************/
+        }
+
+?>

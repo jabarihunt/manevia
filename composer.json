@@ -1,0 +1,30 @@
+{
+  "config":
+  {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+  },
+  "require":
+  {
+    "monolog/monolog": "*",
+    "mustache/mustache": "*",
+    "phpmailer/phpmailer": "*",
+    "robmorgan/phinx": "*",
+    "vlucas/phpdotenv": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload":
+  {
+    "psr-4": {
+      "Manevia\\":
+      [
+        "controllers/",
+        "controllers/base/",
+        "core/",
+        "models/",
+        "models/base/"
+      ]}
+  }
+}

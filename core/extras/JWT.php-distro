@@ -1,0 +1,116 @@
+<?php namespace Manevia;
+
+	/**
+	*	JSON Web Token Handler
+	*	AUTHOR: Jabari J. Hunt
+	*	E-MAIL: jabari@jabari.net
+	*	   PHP: 5
+	**/
+
+	final class JWT
+	{
+        /*** SET JWT ALGORITHM AND SECRET ***/
+
+            private static $algorithm = self::ALGORITHM_TYPE_HS256;
+            private static $secret    = '';
+
+        /*******************************************************************************
+         *****   DO NOT EDIT BELOW THIS BOX UNLESS YOU KNOW WHAT YOU ARE DOING!!!   ****
+         *******************************************************************************/
+
+        //////////////////////////////////////////////
+        // CLASS CONSTANTS
+        //////////////////////////////////////////////
+
+            const ALGORITHM_TYPE_HS256 = 'HS256';   // HMAC with SHA-256, 256+ bit secret
+            const ALGORITHM_TYPE_HS384 = 'HS384';   // HMAC with SHA-384, 384+ bit secret
+            const ALGORITHM_TYPE_HS512 = 'HS512';   // HMAC with SHA-512, 512+ bit secret
+
+        //////////////////////////////////////////////
+        // PUBLIC METHODS
+        //////////////////////////////////////////////
+
+            public static function encode(Array $payload)
+            {
+                // ADD "ISSUED AT" PARAMETER TO PAYLOAD (IF IT DOESN'T EXIST) | BUILD HEADER
+
+                    if (empty($payload['iat'])) {$payload['iat'] = time();}
+                    $header = array('alg' => self::$algorithm, 'type' => 'JWT');
+
+                // BUILD & RETURN TOKEN
+
+                    $token  = self::encodePart($header) . '.' . self::encodePart($payload) . '.';
+                    $token .= hash_hmac(JWT::getHashAlgorithm(), $token, self::$secret);
+
+                // RETURN TOKEN
+
+                    return $token;
+            }
+
+            public static function decode($token)
+            {
+                // SET INITIAL VARIABLES
+
+                    $data = array('isValidated' => FALSE, 'header' => NULL, 'payload' => NULL);
+                    list($header, $payload, $signature) = explode('.', $token);
+
+                // MAKE SURE PARTS EXIST AND ARE ARRAYS
+
+                    if
+                    (
+                        !empty($header) &&
+                        !empty($payload) &&
+                        !empty($signature)
+                    )
+                    {
+                        // EXTRACT HEADER AND PAYLOAD
+
+                            $data['header']  = self::decodePart($header);
+                            $data['payload'] = self::decodePart($payload);
+
+                        // VALIDATE SIGNATURE
+
+                            if (is_string($data['header']->alg) && $data['header']->alg != 'none')
+                            {
+                                $signature = hash_hmac(JWT::getHashAlgorithm(), $header . '.' . $payload, self::$secret);
+                                if ($signature !== FALSE) {$data['isValidated'] = TRUE;}
+                            }
+                    }
+
+                // RETURN DATA
+
+                    return $data;
+            }
+
+            public static function generateSecret()
+            {
+                // SET THE LENGTH BASED ON THE ALGORITHM TYPE
+
+                    if (self::$algorithm == JWT::ALGORITHM_TYPE_HS256) {$length = 32;}
+                    else if (self::$algorithm == JWT::ALGORITHM_TYPE_HS384) {$length = 48;}
+                    else if (self::$algorithm == JWT::ALGORITHM_TYPE_HS512) {$length = 64;}
+                    else {$length = 64;}
+
+                // CREATE & RETURN SECRET
+
+                    return base64_encode(openssl_random_pseudo_bytes($length));
+            }
+
+        //////////////////////////////////////////////
+        // PRIVATE METHODS
+        //////////////////////////////////////////////
+
+            private static function decodePart($data) {return json_decode(base64_decode($data));}
+            private static function encodePart(Array $data) {return base64_encode(json_encode($data));}
+            private static function getHashAlgorithm()
+            {
+                if (self::$algorithm == JWT::ALGORITHM_TYPE_HS256) {$sha = 'sha256';}
+                else if (self::$algorithm == JWT::ALGORITHM_TYPE_HS384) {$sha = 'sha384';}
+                else if (self::$algorithm == JWT::ALGORITHM_TYPE_HS512) {$sha = 'sha512';}
+                else {$sha = 'sha512';}
+
+                return $sha;
+            }
+	}
+
+?>
