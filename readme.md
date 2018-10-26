@@ -14,8 +14,8 @@ Quick Start _(Development Environment)_
 -------------
 You'll need to install [Vagrant](https://www.vagrantup.com/) as well as compatible virtualization software such at [VirtualBox](https://www.virtualbox.org/).  While most of the major steps to get up an running fast have been automated, there are a few simple steps that you must do manually (for now)..
 
- 1. Clone this repository into your working directory | `git clone git@bitbucket.org:jabarihunt/manevia.git .`
- 2. Add an entry to your host file for your domain | _Example:_ `192.168.33.20 manevia.test`
+ 1. Clone this repository into your working directory | `git clone https://github.com/jabarihunt/manevia.git .`
+ 2. Add an entry to your host file for your domain | _Example:_ `192.168.33.10 manevia.test`
  3. Copy _.env.example_ to _.env_ | `cp .env.example .env`
  4. Open the .env file and update the IP address to the one you set in your host file | _Example:_ `DEVELOPMENT_IP_ADDRESS = "192.168.33.20"`
  5. Run Vagrant (and get a cup of coffee) | `vagrant up`
