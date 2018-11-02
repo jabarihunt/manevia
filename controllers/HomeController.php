@@ -27,7 +27,7 @@
                 {
                     parent::__construct();
                     $this->helloWorldMessage = 'Hello World, I am Manevia!';
-                    $this->loadTemplate('home', $this);
+                    $this->loadTemplate('home');
                 }
         }
 

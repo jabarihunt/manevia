@@ -89,7 +89,7 @@
                         http_response_code($this->errorCode);
                         $this->errorMessage = self::ERRORS[$this->errorCode];
                         $this->setPageTitle("{$this->errorCode} - {$this->errorMessage}");
-                        $this->loadTemplate('error', $this);
+                        $this->loadTemplate('error');
                 }
         }
 

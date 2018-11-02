@@ -43,7 +43,7 @@
          * @param mixed $templateValues
          ********************************************************************************/
 
-            protected function loadTemplate($template, $templateValues)
+            protected function loadTemplate($template, $templateValues = NULL)
             {
                 $mustache = new Mustache_Engine
                 ([
@@ -53,6 +53,7 @@
                     'strict_callables' => true
                 ]);
 
+                if ($templateValues === NULL) {$templateValues = $this;}
                 echo $mustache->render("{$template}.mustache", $templateValues);
             }
 
