@@ -19,11 +19,19 @@
                 {
                     case 'backup-db'   : shell_exec("mysqldump --user='{$_ENV['DATABASE_USER']}' --password='{$_ENV['DATABASE_PASSWORD']}' {$_ENV['DATABASE_NAME']} > {$_ENV['WEB_ROOT']}/backup/database/backup_db-" . time() . '.sql'); break;
                     case 'deploy'      : break; //echo shell_exec('/var/www/html/cli/build.sh'); break;
-                    case 'build-models': require('/var/www/html/cli/model_builder_docs/BaseModelBuilder.php'); break;
+                    case 'build-models': buildModels(); break;
                     case 'help'        : displayCommands(); break;
                 }
         }
         else {displayCommands();}
+
+    // BUILD MODELS FUNCTION
+
+        function buildModels()
+        {
+            require('/var/www/html/cli/model_builder_docs/BaseModelBuilder.php');
+            shell_exec('php /usr/local/bin/composer install --optimize-autoloader');
+        }
 
     // DISPLAY COMMANDS FUNCTION
 
