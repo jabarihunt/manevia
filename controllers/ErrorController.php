@@ -12,9 +12,9 @@
         {
             /********************************************************************************
              * CLASS VARIABLES
+             * @var array ERRORS
              * @var string $errorCode
              * @var string $errorMessage
-             * @var array ERRORS
              ********************************************************************************/
 
 				const ERRORS =
