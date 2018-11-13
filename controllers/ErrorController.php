@@ -80,14 +80,15 @@
                         if (!empty($values) && array_key_exists($values[0], self::ERRORS)) {$this->errorCode = $values[0];}
                         else
                         {
+                            header("HTTP/1.1 404 Not Found");
                             header('Location: /error/404');
                             exit;
                         }
 
-                    // SET -> HEADER RESPONSE CODE | ERROR MESSAGE | PAGE TITLE | TEMPLATE
+                    // SET -> ERROR MESSAGE | HEADER HTTP CODE & MESSAGE | PAGE TITLE | TEMPLATE
 
-                        http_response_code($this->errorCode);
                         $this->errorMessage = self::ERRORS[$this->errorCode];
+                        header("HTTP/1.1 {$this->errorCode} {$this->errorMessage}");
                         $this->setPageTitle("{$this->errorCode} - {$this->errorMessage}");
                         $this->loadTemplate('error');
                 }
