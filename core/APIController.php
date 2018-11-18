@@ -2,35 +2,29 @@
 
     class APIController
     {
-        ////////////////////////////////////////////////////////////////
-        // CLASS VARIABLES
-        ////////////////////////////////////////////////////////////////
+        /********************************************************************************
+         * CLASS VARIABLES
+         * @var string $response
+         ********************************************************************************/
 
-            // PROTECTED VARIABLES
+            public $response;
 
-                private $responseArray;
+        /********************************************************************************
+         * CONSTRUCT METHOD
+         * @param boolean $useCoors
+         ********************************************************************************/
 
-            // RESPONSE CODES
-
-                const RESPONSE_OK           = 200;
-                const RESPONSE_UNAUTHORIZED = 401;
-                const RESPONSE_FORBIDDEN    = 403;
-                const RESPONSE_NOT_FOUND    = 404;
-                const RESPONSE_SERVER_ERROR = 500;
-
-        ////////////////////////////////////////////////////////////////
-        // CONSTRUCTOR & DESTRUCTOR
-        ////////////////////////////////////////////////////////////////
-
-            public function __construct($useCoors = TRUE)
+            public function __construct($useCors = TRUE)
             {
-                // SET COORS HEADERS
+                // SET CONTENT TYPE HEADER | SET CORS HEADERS
 
-                    if ($useCoors)
+                    header('Content-Type: application/json');
+
+                    if ($useCors)
                     {
                         header('Access-Control-Allow-Origin: *');
 
-                        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+                        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
                         {
                             header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
                             header('Access-Control-Max-Age: 604800');
@@ -39,16 +33,22 @@
                     }
             }
 
+        /********************************************************************************
+         * DESTRUCT METHOD
+         ********************************************************************************/
+
             public function __destruct()
             {
-                // RETURN RESPONSE
+                // HANDLE EMPTY RESPONSE | LOAD TEMPLATE
 
-                    if (!empty($this->responseArray)) {echo json_encode($this->responseArray);}
+                    if (empty($this->response)) {$this->setResponse(NULL, 400, 'Bad Request');}
+                    echo $this->response;
             }
 
-        ////////////////////////////////////////////////////////////////
-        // PROTECTED METHODS
-        ////////////////////////////////////////////////////////////////
+        /********************************************************************************
+         * REQUEST IS AUTHORIZED METHOD
+         * @return boolean
+         ********************************************************************************/
 
             protected function requestIsAuthorized()
             {
@@ -71,35 +71,51 @@
                     return $authorized;
             }
 
-            protected function sendOKResponse(Array $data)
-            {
-                // SET RESPONSE CODE | BUILD RESPONSE ARRAY
+        /********************************************************************************
+         * GET JSON DATA METHOD
+         * @return array
+         ********************************************************************************/
 
-                    http_response_code(APIController::RESPONSE_OK);
-                    if (is_array($data) && count($data) > 0) {$this->responseArray = array('data' => $data);}
+            protected function getJSONData()
+            {
+                $data = file_get_contents("php://input");
+                return !empty($data) ? json_decode($data, TRUE) : NULL;
             }
 
-            protected function sendErrorResponse($message, $responseCode = Controller::RESPONSE_OK)
+        /********************************************************************************
+         * SET RESPONSE MESSAGE METHOD
+         * @param array $data
+         * @param integer $htmlCode
+         * @param string $message
+         ********************************************************************************/
+
+            protected function setResponse(Array $data = NULL, $htmlCode = 200, $errorMessage = NULL)
             {
-                // CREATE ARRAY OF VALID RESPONSE CODES (SHOULD BE CLASS CONSTANTS)
+                // INSTANTIATE RESPONSE ARRAY | BUILD RESPONSE
 
-                    $validResponseCodes = array(Controller::RESPONSE_OK, Controller::RESPONSE_FORBIDDEN, Controller::RESPONSE_NOT_FOUND, Controller::RESPONSE_SERVER_ERROR);
+                    $response = [];
 
-                // SET RESPONSE CODE | BUILD RESPONSE ARRAY
-
-                    if (is_int($responseCode) && !empty($message) && in_array($responseCode, $validResponseCodes))
+                    if ($htmlCode === 200 && !empty($data))
                     {
-                        http_response_code($responseCode);
-
-                        $this->responseArray = array
-                        (
-                            'error' => array
-                            (
-                                'code'    => $responseCode,
-                                'message' => $message
-                            )
-                        );
+                        header("HTTP/1.1 200 OK");
+                        $response['data'] = $data;
                     }
+                    else
+                    {
+                        header("HTTP/1.1 {$htmlCode} {$errorMessage}");
+
+                        $response['errors'] =
+                        [
+                            [
+                                'status'  => $htmlCode,
+                                'message' => $errorMessage
+                            ]
+                        ];
+                    }
+
+                // SET RESPONSE
+
+                    $this->response = json_encode($response);
             }
     }
 
