@@ -2,7 +2,7 @@
 
     /********************************************************************************
      * [MODEL_NAME_UPPERCASE] BASE MODEL
-     * PHP version 7.1
+     * PHP version 5.6+
      * Auto Generated via ../cli/model_builder_docs/BaseModelBuilder.php
      ********************************************************************************/
 
@@ -50,12 +50,12 @@
             /********************************************************************************
              * CREATE METHOD
              * @param array $data An array values to update
-             * @returns object
+             * @return [MODEL_NAME]
              ********************************************************************************/
 
                 public static function create(Array $data)
                 {
-					// RUN BEFORE CREATE CALLBACK | SET INITIAL VARIABLES | SANITIZE DATA
+                    // RUN BEFORE CREATE CALLBACK | SET INITIAL VARIABLES | SANITIZE DATA
 
                         $data = call_user_func('static::beforeCreate', $data);
                         $data = self::sanitize($data);
@@ -98,7 +98,7 @@
                                 $statement->close();
                         }
 
-					// RUN AFTER CREATE CALLBACK | RETURN MODEL
+                    // RUN AFTER CREATE CALLBACK | RETURN MODEL
 
                         return $[MODEL_NAME_FIRST_LETTER_LOWERCASE];
                 }
@@ -106,7 +106,7 @@
             /********************************************************************************
              * GET METHOD
              * @param integer $id
-             * @returns object [MODEL_NAME] object
+             * @return [MODEL_NAME]
              ********************************************************************************/
 
                 public static function get($id)
