@@ -1,17 +1,28 @@
 <?php namespace Manevia;
 
-    /**
-	*	JSON Web Token Handler
-	*	AUTHOR: Jabari J. Hunt
-	*	E-MAIL: jabari@jabari.net
-	*	   PHP: 5.6+
-	**/
+    /********************************************************************************
+    * JSON Web Token Handler | PHP 5.6+
+    *
+    * A simple class for both signing and verifying JSON WEb Tokens.  Additionally,
+    * a method is provided for generating secrets.  It currently supports HS256,
+    * HS384, and HS512, but eventually support for the corresponding RS and ES
+    * algorithms will be added!
+    *
+    * @author Jabari J. Hunt <jabari@jabari.net>
+    * @todo Add support for RS and ES algorithms
+    ********************************************************************************/
 
-	final class JWT
+	class JWT
 	{
-        //////////////////////////////////////////////
-        // CLASS VARIABLES
-        //////////////////////////////////////////////
+        /********************************************************************************
+         * CLASS VARIABLES
+         * @var array ALGORITHM_TYPE_HS256
+         * @var array ALGORITHM_TYPE_HS384
+         * @var array ALGORITHM_TYPE_HS512
+         * @var array ALGORITHM_TYPE_NONE
+         * @var array ALGORITHM_TYPES
+         * @var array $algorithm;
+         ********************************************************************************/
 
             const ALGORITHM_TYPE_HS256 = ['name' => 'HS256', 'sha' => 'sha256', 'length' => '32'];
             const ALGORITHM_TYPE_HS384 = ['name' => 'HS384', 'sha' => 'sha384', 'length' => '48'];
@@ -28,9 +39,10 @@
 
             private $algorithm;
 
-        //////////////////////////////////////////////
-        // CONSTRUCT METHOD
-        //////////////////////////////////////////////
+        /********************************************************************************
+         * CONSTRUCT METHOD
+         * @param array $algorithm
+         ********************************************************************************/
 
             public function __construct(Array $algorithm = self::ALGORITHM_TYPE_HS256)
             {
@@ -43,92 +55,129 @@
         // PUBLIC METHODS
         //////////////////////////////////////////////
 
-            public function sign(Array $payload, $secretOrPrivateKey)
-            {
-                // BUILD TOKEN HEADER AND PAYLOAD
+            /********************************************************************************
+             * SIGN METHOD
+             * @param array $payload
+             * @param string $secretOrPrivateKey
+             * @return string
+             ********************************************************************************/
 
-                    $token  = $this->encodePart(['alg' => $this->algorithm['name'], 'type' => 'JWT']);
-                    $token .= '.' . $this->encodePart($payload);
+                final public function sign(Array $payload, $secretOrPrivateKey)
+                {
+                    // BUILD TOKEN HEADER AND PAYLOAD
 
-                // SIGN THE TOKEN
+                        $token  = self::encodePart(['alg' => $this->algorithm['name'], 'type' => 'JWT']);
+                        $token .= '.' . self::encodePart($payload);
 
-                    if
-                    (
-                        $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
-                        $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
-                        $this->algorithm === self::ALGORITHM_TYPE_HS512
-                    )
-                    {$token .= '.' . base64_encode(hash_hmac($this->algorithm['sha'], $token, $secretOrPrivateKey));}
-                    else {$token .= '.';}
+                    // SIGN THE TOKEN
 
-                // RETURN THE TOKEN
+                        if
+                        (
+                            $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
+                            $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
+                            $this->algorithm === self::ALGORITHM_TYPE_HS512
+                        )
+                        {$token .= '.' . self::encodePart(hash_hmac($this->algorithm['sha'], $token, $secretOrPrivateKey), FALSE);}
+                        else {$token .= '.';}
 
-                    return $token;
-            }
+                    // RETURN THE TOKEN
 
-            public function verify($token, $secretOrPublicKey)
-            {
-                // SET INITIAL VARIABLES | MAKE SURE REQUIRED PARTS EXIST
+                        return $token;
+                }
 
-                    $data['isVerified'] = FALSE;
-                    list($header, $payload, $signature) = explode('.', $token);
+            /********************************************************************************
+             * VERIFY METHOD
+             * @param string $token
+             * @param string $secretOrPublicKey
+             * @return array
+             ********************************************************************************/
 
-                    if
-                    (
-                        !empty($header) &&
-                        !empty($payload)
-                    )
-                    {
-                        // EXTRACT HEADER AND PAYLOAD
+                final public function verify($token, $secretOrPublicKey)
+                {
+                    // SET INITIAL VARIABLES | MAKE SURE REQUIRED PARTS EXIST
 
-                            $data['header']    = self::decodePart($header);
-                            $data['payload']   = self::decodePart($payload);
-                            $data['signature'] = $signature;
-                            $data['token']     = $token;
+                        $data['isVerified'] = FALSE;
+                        list($header, $payload, $signature) = explode('.', $token);
 
-                        // VALIDATE SIGNATURE
+                        if (!empty($header) && !empty($payload))
+                        {
+                            // EXTRACT HEADER AND PAYLOAD
 
-                            if (!empty($data['header']->alg) && $data['header']->alg !== 'none')
-                            {
-                                // HS256, HS384, HS512
+                                $data['header']    = self::decodePart($header);
+                                $data['payload']   = self::decodePart($payload);
+                                $data['signature'] = self::decodePart($signature, FALSE);
 
-                                    if
-                                    (
-                                        $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
-                                        $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
-                                        $this->algorithm === self::ALGORITHM_TYPE_HS512
-                                    )
-                                    {
-                                        $sha = self::ALGORITHM_TYPES[$data['header']->alg]['sha'];
+                            // VALIDATE SIGNATURE
+
+                                if (!empty($data['header']->alg) && $data['header']->alg !== 'none')
+                                {
+                                    // HS256, HS384, HS512
 
                                         if
                                         (
-                                            !empty($sha) &&
-                                            $signature === base64_encode(hash_hmac($sha, "{$header}.{$payload}", $secretOrPublicKey))
+                                            $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
+                                            $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
+                                            $this->algorithm === self::ALGORITHM_TYPE_HS512
                                         )
-                                        {$data['isVerified'] = TRUE;}
-                                    }
-                            }
+                                        {
+                                            $sha = self::ALGORITHM_TYPES[$data['header']->alg]['sha'];
 
-                    }
+                                            if
+                                            (
+                                                !empty($sha) &&
+                                                $signature === self::encodePart(hash_hmac($sha, "{$header}.{$payload}", $secretOrPublicKey), FALSE)
+                                            )
+                                            {$data['isVerified'] = TRUE;}
+                                        }
+                                }
 
-                // RETURN DATA
+                        }
 
-                    return $data;
-            }
+                    // RETURN DATA
 
-            public static function generateSecret($algorithm = self::ALGORITHM_TYPE_HS256)
-            {
-                return in_array($algorithm, self::ALGORITHM_TYPES) ? base64_encode(openssl_random_pseudo_bytes($algorithm['length'])) : NULL;
-            }
+                        return $data;
+                }
+
+            /********************************************************************************
+             * GENERATE SECRET METHOD
+             * @param array $algorithm
+             * @return string
+             ********************************************************************************/
+
+                final public static function generateSecret($algorithm = self::ALGORITHM_TYPE_HS256)
+                {
+                    return in_array($algorithm, self::ALGORITHM_TYPES) ? self::encodePart(openssl_random_pseudo_bytes($algorithm['length']), FALSE) : NULL;
+                }
 
         //////////////////////////////////////////////
         // PRIVATE METHODS
         //////////////////////////////////////////////
 
-            private static function encodePart(Array $data) {return base64_encode(json_encode($data));}
+            /********************************************************************************
+             * ENCODE PART METHOD
+             * @param mixed $data
+             * @param boolean $encodeJSON
+             * @return string
+             ********************************************************************************/
 
-            private static function decodePart($data) {return json_decode(base64_decode($data));}
+                private static function encodePart($data, $encodeJSON = TRUE)
+                {
+                    if ($encodeJSON) {$data = json_encode($data);}
+                    return base64_encode($data);
+                }
+
+            /********************************************************************************
+             * DECODE PART METHOD
+             * @param string $data
+             * @param boolean $decodeJSON
+             * @return array
+             ********************************************************************************/
+
+                private static function decodePart($data, $decodeJSON = TRUE)
+                {
+                    $data = base64_decode($data);
+                    return $decodeJSON ? json_decode($data) : $data;
+                }
 	}
 
 ?>
