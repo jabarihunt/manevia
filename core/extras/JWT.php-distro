@@ -11,33 +11,37 @@
     * JWT::generateSecret() generates a secret with twice the recommended key length.
     *
     * @author Jabari J. Hunt <jabari@jabari.net>
-    * @todo Add support for RS and ES algorithms
+    * @todo Add support for ES and RS algorithms
     ********************************************************************************/
 
 	class JWT
 	{
         /********************************************************************************
          * CLASS VARIABLES
-         * @var array ALGORITHM_TYPE_HS256
-         * @var array ALGORITHM_TYPE_HS384
-         * @var array ALGORITHM_TYPE_HS512
-         * @var array ALGORITHM_TYPE_NONE
-         * @var array ALGORITHM_TYPES
-         * @var array $algorithm;
+         * @var string ALGORITHM_HS256
+         * @var string ALGORITHM_HS384
+         * @var string ALGORITHM_HS512
+         * @var string ALGORITHM_NONE
+         * @var array ALGORITHMS
+         * @var array USES_KEY
+         * @var array USES_SECRET
          ********************************************************************************/
 
-            const ALGORITHM_TYPE_HS256 = ['name' => 'HS256', 'sha' => 'sha256', 'length' => '64'];
-            const ALGORITHM_TYPE_HS384 = ['name' => 'HS384', 'sha' => 'sha384', 'length' => '96'];
-            const ALGORITHM_TYPE_HS512 = ['name' => 'HS512', 'sha' => 'sha512', 'length' => '128'];
-            const ALGORITHM_TYPE_NONE  = ['name' => 'none', 'sha' => NULL, 'length' => NULL];
+            const ALGORITHM_HS256 = 'HS256';
+            const ALGORITHM_HS384 = 'HS384';
+            const ALGORITHM_HS512 = 'HS512';
+            const ALGORITHM_NONE  = 'none';
 
-            const ALGORITHM_TYPES =
+            const ALGORITHMS =
             [
-                'HS256' => self::ALGORITHM_TYPE_HS256,
-                'HS384' => self::ALGORITHM_TYPE_HS384,
-                'HS512' => self::ALGORITHM_TYPE_HS512,
-                'none'  => self::ALGORITHM_TYPE_NONE
+                'HS256' => ['name' => 'HS256', 'sha' => 'sha256', 'length' => '64'],
+                'HS384' => ['name' => 'HS384', 'sha' => 'sha384', 'length' => '96'],
+                'HS512' => ['name' => 'HS512', 'sha' => 'sha512', 'length' => '128'],
+                'none'  => ['name' => 'none', 'sha' => NULL, 'length' => NULL]
             ];
+
+            const USES_KEY    = [];
+            const USES_SECRET = ['HS256', 'HS384', 'HS512'];
 
         //////////////////////////////////////////////
         // PUBLIC METHODS
@@ -47,16 +51,17 @@
              * SIGN METHOD
              * @param array $payload
              * @param string $secretOrPrivateKey
-             * @param array $algorithm
+             * @param string $algorithm
              * @throws \Exception Invalid algorithm passed to JWT::sign().
              * @return string
              ********************************************************************************/
 
-                final public static function sign(Array $payload, $secretOrPrivateKey, Array $algorithm = self::ALGORITHM_TYPE_HS256)
+                final public static function sign(Array $payload, $secretOrPrivateKey, $algorithm = self::ALGORITHM_HS256)
                 {
                     // MAKE SURE A SUPPORTED ALGORITHM WAS PASSED
 
-                        if (!in_array($algorithm, self::ALGORITHM_TYPES)) {throw new \Exception('Invalid algorithm passed to JWT::sign().');}
+                        if (array_key_exists($algorithm, self::ALGORITHMS)) {$algorithm = self::ALGORITHMS[$algorithm];}
+                        else {throw new \Exception('Invalid algorithm passed to JWT::sign().');}
 
                     // BUILD TOKEN HEADER AND PAYLOAD
 
@@ -65,14 +70,12 @@
 
                     // SIGN THE TOKEN
 
-                        if
-                        (
-                            $algorithm === self::ALGORITHM_TYPE_HS256 ||
-                            $algorithm === self::ALGORITHM_TYPE_HS384 ||
-                            $algorithm === self::ALGORITHM_TYPE_HS512
-                        )
-                        {$token .= '.' . self::encode(hash_hmac($algorithm['sha'], $token, $secretOrPrivateKey), FALSE);}
-                        else if ($algorithm === self::ALGORITHM_TYPE_NONE) {$token .= '.';}
+                        if (in_array($algorithm['name'], self::USES_SECRET))
+                        {
+                            $token .= '.' . self::encode(hash_hmac($algorithm['sha'], $token, $secretOrPrivateKey), FALSE);
+                        }
+                        else if (in_array($algorithm['name'], self::USES_KEY)) {}
+                        else {$token .= '.';}
 
                     // RETURN THE TOKEN
 
@@ -108,27 +111,21 @@
                                 {
                                     // GET ALGORITHM
 
-                                        if (!empty(self::ALGORITHM_TYPES[$data['header']->alg])) {$algorithm = self::ALGORITHM_TYPES[$data['header']->alg];}
+                                        if (!empty(self::ALGORITHMS[$data['header']->alg])) {$algorithm = self::ALGORITHMS[$data['header']->alg];}
                                         else {throw new \Exception('Token signed with unsupported algorithm.');}
 
-                                    // HS256, HS384, HS512
+                                    // HS256, HS384, HS512 -> CHECK SIGNATURE
 
                                         if
                                         (
-                                            $algorithm === self::ALGORITHM_TYPE_HS256 ||
-                                            $algorithm === self::ALGORITHM_TYPE_HS384 ||
-                                            $algorithm === self::ALGORITHM_TYPE_HS512
+                                            in_array($algorithm['name'], self::USES_SECRET) &&
+                                            $signature === self::encode(hash_hmac($algorithm['sha'], "{$header}.{$payload}", $secretOrPublicKey), FALSE)
                                         )
-                                        {
-                                            $sha = self::ALGORITHM_TYPES[$data['header']->alg]['sha'];
+                                        {$data['isVerified'] = TRUE;}
 
-                                            if
-                                            (
-                                                !empty($sha) &&
-                                                $signature === self::encode(hash_hmac($sha, "{$header}.{$payload}", $secretOrPublicKey), FALSE)
-                                            )
-                                            {$data['isVerified'] = TRUE;}
-                                        }
+                                    // ES256, ES384, ES512, RS256, RS384, RS512 -> CHECK SIGNATURE
+
+                                        else if (in_array($algorithm['name'], self::USES_KEY)) {}
                                 }
 
                         }
@@ -140,15 +137,17 @@
 
             /********************************************************************************
              * GENERATE SECRET METHOD
-             * @param array $algorithm
+             * @param string $algorithm
              * @throws \Exception
              * @return string
              ********************************************************************************/
 
-                final public static function generateSecret($algorithm = self::ALGORITHM_TYPE_HS256)
+                final public static function generateSecret($algorithm = self::ALGORITHM_HS256)
                 {
-                    if (!in_array($algorithm, self::ALGORITHM_TYPES)) {throw new \Exception('Invalid algorithm passed to JWT::generateSecret().');}
-                    return in_array($algorithm, self::ALGORITHM_TYPES) ? base64_encode(random_bytes($algorithm['length'])) : NULL;
+                    if (array_key_exists($algorithm, self::ALGORITHMS)) {$algorithm = self::ALGORITHMS[$algorithm];}
+                    else {throw new \Exception('Invalid algorithm passed to JWT::generateSecret().');}
+
+                    return base64_encode(random_bytes($algorithm['length']));
                 }
 
         //////////////////////////////////////////////
