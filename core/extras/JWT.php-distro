@@ -8,6 +8,8 @@
     * HS384, and HS512, but eventually support for the corresponding RS and ES
     * algorithms will be added!
     *
+    * JWT::generateSecret() generates a secret with twice the recommended key length.
+    *
     * @author Jabari J. Hunt <jabari@jabari.net>
     * @todo Add support for RS and ES algorithms
     ********************************************************************************/
@@ -24,9 +26,9 @@
          * @var array $algorithm;
          ********************************************************************************/
 
-            const ALGORITHM_TYPE_HS256 = ['name' => 'HS256', 'sha' => 'sha256', 'length' => '32'];
-            const ALGORITHM_TYPE_HS384 = ['name' => 'HS384', 'sha' => 'sha384', 'length' => '48'];
-            const ALGORITHM_TYPE_HS512 = ['name' => 'HS512', 'sha' => 'sha512', 'length' => '64'];
+            const ALGORITHM_TYPE_HS256 = ['name' => 'HS256', 'sha' => 'sha256', 'length' => '64'];
+            const ALGORITHM_TYPE_HS384 = ['name' => 'HS384', 'sha' => 'sha384', 'length' => '96'];
+            const ALGORITHM_TYPE_HS512 = ['name' => 'HS512', 'sha' => 'sha512', 'length' => '128'];
             const ALGORITHM_TYPE_NONE  = ['name' => 'none', 'sha' => NULL, 'length' => NULL];
 
             const ALGORITHM_TYPES =
@@ -37,20 +39,6 @@
                 'none'  => self::ALGORITHM_TYPE_NONE
             ];
 
-            private $algorithm;
-
-        /********************************************************************************
-         * CONSTRUCT METHOD
-         * @param array $algorithm
-         ********************************************************************************/
-
-            public function __construct(Array $algorithm = self::ALGORITHM_TYPE_HS256)
-            {
-                // SET CLASS ALGORITHM VARIABLE
-
-                    if (in_array($algorithm, self::ALGORITHM_TYPES)) {$this->algorithm = $algorithm;}
-            }
-
         //////////////////////////////////////////////
         // PUBLIC METHODS
         //////////////////////////////////////////////
@@ -59,26 +47,32 @@
              * SIGN METHOD
              * @param array $payload
              * @param string $secretOrPrivateKey
+             * @param array $algorithm
+             * @throws \Exception Invalid algorithm passed to JWT::sign().
              * @return string
              ********************************************************************************/
 
-                final public function sign(Array $payload, $secretOrPrivateKey)
+                final public static function sign(Array $payload, $secretOrPrivateKey, Array $algorithm = self::ALGORITHM_TYPE_HS256)
                 {
+                    // MAKE SURE A SUPPORTED ALGORITHM WAS PASSED
+
+                        if (!in_array($algorithm, self::ALGORITHM_TYPES)) {throw new \Exception('Invalid algorithm passed to JWT::sign().');}
+
                     // BUILD TOKEN HEADER AND PAYLOAD
 
-                        $token  = self::encodePart(['alg' => $this->algorithm['name'], 'type' => 'JWT']);
-                        $token .= '.' . self::encodePart($payload);
+                        $token  = self::encode(['alg' => $algorithm['name'], 'type' => 'JWT']);
+                        $token .= '.' . self::encode($payload);
 
                     // SIGN THE TOKEN
 
                         if
                         (
-                            $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
-                            $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
-                            $this->algorithm === self::ALGORITHM_TYPE_HS512
+                            $algorithm === self::ALGORITHM_TYPE_HS256 ||
+                            $algorithm === self::ALGORITHM_TYPE_HS384 ||
+                            $algorithm === self::ALGORITHM_TYPE_HS512
                         )
-                        {$token .= '.' . self::encodePart(hash_hmac($this->algorithm['sha'], $token, $secretOrPrivateKey), FALSE);}
-                        else {$token .= '.';}
+                        {$token .= '.' . self::encode(hash_hmac($algorithm['sha'], $token, $secretOrPrivateKey), FALSE);}
+                        else if ($algorithm === self::ALGORITHM_TYPE_NONE) {$token .= '.';}
 
                     // RETURN THE TOKEN
 
@@ -89,10 +83,11 @@
              * VERIFY METHOD
              * @param string $token
              * @param string $secretOrPublicKey
+             * @throws \Exception Token signed with unsupported algorithm.
              * @return array
              ********************************************************************************/
 
-                final public function verify($token, $secretOrPublicKey)
+                final public static function verify($token, $secretOrPublicKey)
                 {
                     // SET INITIAL VARIABLES | MAKE SURE REQUIRED PARTS EXIST
 
@@ -103,21 +98,26 @@
                         {
                             // EXTRACT HEADER AND PAYLOAD
 
-                                $data['header']    = self::decodePart($header);
-                                $data['payload']   = self::decodePart($payload);
-                                $data['signature'] = self::decodePart($signature, FALSE);
+                                $data['header']    = self::decode($header);
+                                $data['payload']   = self::decode($payload);
+                                $data['signature'] = $signature;
 
                             // VALIDATE SIGNATURE
 
                                 if (!empty($data['header']->alg) && $data['header']->alg !== 'none')
                                 {
+                                    // GET ALGORITHM
+
+                                        if (!empty(self::ALGORITHM_TYPES[$data['header']->alg])) {$algorithm = self::ALGORITHM_TYPES[$data['header']->alg];}
+                                        else {throw new \Exception('Token signed with unsupported algorithm.');}
+
                                     // HS256, HS384, HS512
 
                                         if
                                         (
-                                            $this->algorithm === self::ALGORITHM_TYPE_HS256 ||
-                                            $this->algorithm === self::ALGORITHM_TYPE_HS384 ||
-                                            $this->algorithm === self::ALGORITHM_TYPE_HS512
+                                            $algorithm === self::ALGORITHM_TYPE_HS256 ||
+                                            $algorithm === self::ALGORITHM_TYPE_HS384 ||
+                                            $algorithm === self::ALGORITHM_TYPE_HS512
                                         )
                                         {
                                             $sha = self::ALGORITHM_TYPES[$data['header']->alg]['sha'];
@@ -125,7 +125,7 @@
                                             if
                                             (
                                                 !empty($sha) &&
-                                                $signature === self::encodePart(hash_hmac($sha, "{$header}.{$payload}", $secretOrPublicKey), FALSE)
+                                                $signature === self::encode(hash_hmac($sha, "{$header}.{$payload}", $secretOrPublicKey), FALSE)
                                             )
                                             {$data['isVerified'] = TRUE;}
                                         }
@@ -141,12 +141,14 @@
             /********************************************************************************
              * GENERATE SECRET METHOD
              * @param array $algorithm
+             * @throws \Exception
              * @return string
              ********************************************************************************/
 
                 final public static function generateSecret($algorithm = self::ALGORITHM_TYPE_HS256)
                 {
-                    return in_array($algorithm, self::ALGORITHM_TYPES) ? self::encodePart(openssl_random_pseudo_bytes($algorithm['length']), FALSE) : NULL;
+                    if (!in_array($algorithm, self::ALGORITHM_TYPES)) {throw new \Exception('Invalid algorithm passed to JWT::generateSecret().');}
+                    return in_array($algorithm, self::ALGORITHM_TYPES) ? base64_encode(random_bytes($algorithm['length'])) : NULL;
                 }
 
         //////////////////////////////////////////////
@@ -154,28 +156,28 @@
         //////////////////////////////////////////////
 
             /********************************************************************************
-             * ENCODE PART METHOD
+             * ENCODE METHOD
              * @param mixed $data
              * @param boolean $encodeJSON
              * @return string
              ********************************************************************************/
 
-                private static function encodePart($data, $encodeJSON = TRUE)
+                private static function encode($data, $encodeJSON = TRUE)
                 {
                     if ($encodeJSON) {$data = json_encode($data);}
-                    return base64_encode($data);
+                    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
                 }
 
             /********************************************************************************
-             * DECODE PART METHOD
+             * DECODE METHOD
              * @param string $data
              * @param boolean $decodeJSON
              * @return array
              ********************************************************************************/
 
-                private static function decodePart($data, $decodeJSON = TRUE)
+                private static function decode($data, $decodeJSON = TRUE)
                 {
-                    $data = base64_decode($data);
+                    $data = base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
                     return $decodeJSON ? json_decode($data) : $data;
                 }
 	}

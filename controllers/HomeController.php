@@ -1,6 +1,6 @@
 <?php
 
-    use Manevia\User;
+use Manevia\JWT;
     use Manevia\Controller;
 
     /********************************************************************************
