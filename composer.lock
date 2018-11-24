@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62f7d7b52f4ebfbf5cebabde87bda5e0",
+    "content-hash": "771353b5133bb614786dade09b9c042c",
     "packages": [
         {
             "name": "cakephp/cache",
@@ -296,6 +296,50 @@
                 "utility"
             ],
             "time": "2018-09-05T00:44:03+00:00"
+        },
+        {
+            "name": "jabarihunt/json-web-token",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jabarihunt/JSON-Web-Token.git",
+                "reference": "30dd93e352933f9b637f4b8adf81d7bfd1888529"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jabarihunt/JSON-Web-Token/zipball/30dd93e352933f9b637f4b8adf81d7bfd1888529",
+                "reference": "30dd93e352933f9b637f4b8adf81d7bfd1888529",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "jabarihunt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jabari J. Hunt",
+                    "email": "jabari@jabari.net",
+                    "homepage": "http://www.jabari.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple JSON Web Token implementation.",
+            "homepage": "https://github.com/jabarihunt/JSON-Web-Token",
+            "keywords": [
+                "json",
+                "jwt",
+                "token"
+            ],
+            "time": "2018-11-24T09:48:29+00:00"
         },
         {
             "name": "monolog/monolog",

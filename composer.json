@@ -10,7 +10,8 @@
     "mustache/mustache": "*",
     "phpmailer/phpmailer": "*",
     "robmorgan/phinx": "*",
-    "vlucas/phpdotenv": "*"
+    "vlucas/phpdotenv": "*",
+    "jabarihunt/json-web-token": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
