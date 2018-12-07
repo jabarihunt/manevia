@@ -157,11 +157,18 @@
                 }
 
             /********************************************************************************
+             * CLONE | WAKEUP (TO ENSURE SINGLETON)
+             ********************************************************************************/
+
+                final private function __clone() {parent::__clone();}
+                final private function __wakeup() {parent::__wakeup();}
+
+            /********************************************************************************
              * PUBLIC DB METHODS -> BACKUP | SET INSTANCE | PREPARE | QUERY
              ********************************************************************************/
 
                 /********************************************************************************
-                 * BACKUPMETHOD
+                 * BACKUP METHOD
                  * @param string $directory
                  ********************************************************************************/
 
@@ -185,7 +192,7 @@
                 /********************************************************************************
                  * PREPARE METHOD
                  * @param string $query
-                 * @returns \mysqli_stmt
+                 * @return \mysqli_stmt
                  ********************************************************************************/
 
                     final public static function prepare($query) {return self::get()->prepare($query);}
@@ -193,7 +200,7 @@
                 /********************************************************************************
                  * QUERY METHOD
                  * @param string $query
-                 * @returns \mysqli_result
+                 * @return \mysqli_result
                  ********************************************************************************/
 
                     final public static function query($query) {return self::get()->query($query);}
@@ -210,7 +217,7 @@
              * Used to sanitize individual field values for database insertion.
              * @param mixed $value The value to be sanitized.
              * @param string $dataType The DB datatype of the passed value
-             * @returns mixed
+             * @return mixed
              ********************************************************************************/
 
                 final public static function sanitize($value, $dataType = NULL)
