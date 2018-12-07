@@ -11,7 +11,7 @@
 
         /********************************************************************************
          * CONSTRUCT METHOD
-         * @param boolean $useCoors
+         * @param boolean $useCors
          ********************************************************************************/
 
             public function __construct($useCors = TRUE)
@@ -86,7 +86,7 @@
          * SET RESPONSE MESSAGE METHOD
          * @param array $data
          * @param integer $htmlCode
-         * @param string $message
+         * @param string $errorMessage
          ********************************************************************************/
 
             protected function setResponse(Array $data = NULL, $htmlCode = 200, $errorMessage = NULL)
