@@ -148,14 +148,15 @@ printf "\nMANEVIA: Setup Apache...\n\n"
 
 sudo service apache2 start
 
+sudo cp ${WEB_ROOT}/cli/build_docs/manevia.conf /etc/apache2/sites-enabled/manevia.conf
+sudo sed -i -e "s/\[DOMAIN_NAME]/${DOMAIN_NAME}/g" /etc/apache2/sites-enabled/manevia.conf
+
+sudo a2ensite manevia.conf
+sudo a2dissite 000-default.conf
 sudo a2enmod rewrite
 sudo a2enmod expires
 sudo a2enmod headers
 sudo a2enmod ssl
-
-sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.old
-sudo cp ./build_docs/000-default.conf /etc/apache2/sites-enabled/000-default.conf
-sudo sed -i .backup -e "s/\[DOMAIN_NAME]/${DOMAIN_NAME}/g" /etc/apache2/sites-enabled/000-default.conf
 
 if [ ${GENERATE_SELF_SIGNED_CERTIFICATE} = "1" ] ; then
 sudo mkdir /etc/apache2/.ssl
