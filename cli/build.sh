@@ -189,7 +189,7 @@ then
     rm composer-setup.php
 fi
 
-php composer-setup.php --install-dir=/usr/local/bin --filename=composer --quiet
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer --quiet
 rm composer-setup.php
 php /usr/local/bin/composer install --optimize-autoloader
 
