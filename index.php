@@ -51,7 +51,7 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
                                 if (empty($page)) {$page .= Utilities::slugToCamel($extractedPage);}
                                 else {$page .= Utilities::slugToCamel($extractedPage, TRUE);}
 
-                                if ($pageIsArray) {$arrayHolder = $arrayHolder[$extractedPage];}
+                                if (!empty($arrayHolder[$extractedPage]) && is_array($arrayHolder[$extractedPage])) {$arrayHolder = $arrayHolder[$extractedPage];}
                         }
                         else (array_unshift($values, $extractedPage));
                 }
