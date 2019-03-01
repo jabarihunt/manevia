@@ -38,7 +38,7 @@
              * needed, then call `parent::update($values)` at the end of the method.
              *
              * @param mixed $data An array of values to update
-             * @returns boolean
+             * @return boolean
              ********************************************************************************/
 
                 public function update(Array $data)
@@ -111,7 +111,7 @@
             /********************************************************************************
              * DELETE BY IDS METHOD
              * @param array $ids
-             * @returns boolean
+             * @return boolean
              ********************************************************************************/
 
                 public static function deleteByIds(Array $ids)
@@ -150,7 +150,7 @@
              * Sanitize an array of passed values.  Uses the DB::sanitizeValue() method;
              *
              * @param array $data An array values to update
-             * @returns array
+             * @return array
              ********************************************************************************/
 
                 final protected static function sanitize(Array $data)
@@ -174,7 +174,7 @@
              * Returns an array with the values as a reference
              *
              * @param array $data
-             * @returns array
+             * @return array
              ********************************************************************************/
 
                 private static function arrayReferenceValues(Array $data)
