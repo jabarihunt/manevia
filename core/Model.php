@@ -59,7 +59,7 @@
                         {
                             $data[$field] = DB::sanitize($value, static::DATA_TYPES[$field]);
                             $data[$field] = &$data[$field];    // ADDED TO SATISFY THE call_user_func_array() METHOD
-                            $set          .= "`{$field}` = ?, ";
+                            $set         .= "`{$field}` = ?, ";
 
                             if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_INTEGER)) {$bindTypes .= 'i';}
                             else if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_REAL)) {$bindTypes .= 'd';}
@@ -177,7 +177,7 @@
              * @return array
              ********************************************************************************/
 
-                private static function arrayReferenceValues(Array $data)
+                final protected static function arrayReferenceValues(Array $data)
                 {
                     $referencedValues = [];
 

@@ -105,33 +105,107 @@
 
             /********************************************************************************
              * GET METHOD
-             * @param integer $id
+             * @param integer $idOrData
              * @return [MODEL_NAME]
              ********************************************************************************/
 
-                public static function get($id)
+                public static function get($idOrData)
                 {
                     // RUN BEFORE GET CALLBACK | SET INITIAL VARIABLES
 
-                        $id = call_user_func('static::beforeGet', $id);
-                        $id = self::sanitize([$id])[0];
+                        $idOrData = call_user_func('static::beforeGet', $idOrData);
                         $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = NULL;
 
-                    // VALIDATE PASSED VARIABLE | QUERY DATABASE FOR MODEL DATA AND CREATE MODEL | RUN AFTER CREATE CALLBACK
+                    // MAKE SURE PASSED VALUE ISN'T EMPTY |  | QUERY DATABASE FOR MODEL DATA AND CREATE MODEL | RUN AFTER CREATE CALLBACK
 
-                        if (!empty($id))
+                        if (!empty($idOrData))
                         {
-                            $result = DB::query("SELECT [ALL_COLUMN_NAMES] FROM [TABLE_NAME] WHERE `id` = '{$id}'");
+                            // VALIDATE PASSED VALUE-> CHECK IF ITS AN INTEGER OR ARRAY
 
-                            if ($result instanceof \mysqli_result && $result->num_rows == 1)
-                            {
-                                $data = $result->fetch_assoc();
-                                $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = new [MODEL_NAME]($data);
-                                call_user_func([$[MODEL_NAME_FIRST_LETTER_LOWERCASE], 'afterGet']);
-                            }
+                                if (is_numeric($idOrData) && is_int(intval($idOrData)))
+                                {
+                                    // ASSUME A PRIMARY KEY WAS PASSED
+
+                                        $result = DB::query("SELECT [ALL_COLUMN_NAMES] FROM [TABLE_NAME] WHERE `id` = '{$idOrData}'");
+
+                                        if ($result instanceof \mysqli_result && $result->num_rows == 1)
+                                        {
+                                            $data = $result->fetch_assoc();
+                                            $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = [new [MODEL_NAME]($data)];
+                                            call_user_func([$[MODEL_NAME_FIRST_LETTER_LOWERCASE][0], 'afterGet']);
+                                        }
+                                }
+                                else if (is_array($idOrData))
+                                {
+                                    // ASSUME WHERE STATEMENT VALUES WERE PASSED | SET INITIAL VARIABLES
+
+                                        $data       = $idOrData;
+                                        $bindTypes  = '';
+                                        $params     = [];
+                                        $where      = '';
+
+                                    // LOOP THROUGH DATA TO BUILD WHERE STATEMENT
+
+                                        foreach ($data as $part)
+                                        {
+                                            if (is_array($part) && count($part) === 3)
+                                            {
+                                                // GET QUERY PARTS | SANITIZE AND ADD TO SELECT QUERY PARTS | ADD BIND TYPE
+
+                                                    list($field, $operator, $value) = $part;
+
+                                                    $params[$field] = DB::sanitize($value, static::DATA_TYPES[$field]);
+                                                    $params[$field] = &$params[$field];    // ADDED TO SATISFY THE call_user_func_array() METHOD
+                                                    $where       .= "`{$field}` {$operator} ? AND ";
+
+                                                    if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_INTEGER)) {$bindTypes .= 'i';}
+                                                    else if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_REAL)) {$bindTypes .= 'd';}
+                                                    else {$bindTypes .= 's';}
+                                            }
+                                        }
+
+                                        $where = rtrim($where, ' AND ');
+
+                                    // CREATE PREPARED STATEMENT | ADD BIND TYPE VALUE TO BEGINNING OF VALUES ARRAY
+
+                                        $statement = DB::prepare("SELECT [ALL_COLUMN_NAMES] FROM [TABLE_NAME] WHERE {$where}");
+                                        array_unshift($params, $bindTypes);
+
+                                    // MAKE SURE A VALID MYSQLI STATEMENT WAS RETURNED
+
+                                        if ($statement instanceof \mysqli_stmt)
+                                        {
+                                            // USE REFLECTION CLASS INSTANCE TO BIND VALUES TO PREPARED STATEMENT | EXECUTE STATEMENT
+
+                                                call_user_func_array([&$statement, 'bind_param'], static::arrayReferenceValues($params));
+                                                $statement->execute();
+
+                                            // PROCESS RESULTS | CLOSE STATEMENT
+
+                                                $result = $statement->get_result();
+                                                $key    = 0;
+
+                                                if ($result->num_rows > 0)
+                                                {
+                                                    while ($row = $result->fetch_assoc())
+                                                    {
+                                                        $[MODEL_NAME_FIRST_LETTER_LOWERCASE][$key] = new [MODEL_NAME]($row);
+
+                                                        if ($[MODEL_NAME_FIRST_LETTER_LOWERCASE][$key] instanceof [MODEL_NAME])
+                                                        {
+                                                            call_user_func([$[MODEL_NAME_FIRST_LETTER_LOWERCASE][$key], 'afterGet']);
+                                                        }
+
+                                                        $key++;
+                                                    }
+                                                }
+
+                                                $statement->close();
+                                        }
+                                }
                         }
 
-                    // RETURN MODEL
+                    // CALL AFTER GET CALLBACK | RETURN MODEL
 
                         return $[MODEL_NAME_FIRST_LETTER_LOWERCASE];
                 }
