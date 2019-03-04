@@ -1,7 +1,6 @@
 <?php
 
     use Manevia\Controller;
-    use Manevia\Widget;
 
     /********************************************************************************
      * HOME CONTROLLER
