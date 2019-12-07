@@ -12,14 +12,10 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
         $approvedPages = ['error', 'home'];
 
     /********************************************************************************
-     * COMPOSER AUTO LOAD | INSTANTIATE REQUIRED LIBRARIES -> DOTENV | DB
+     * COMPOSER AUTO LOAD | INSTANTIATE REQUIRED LIBRARIES -> DB
      ********************************************************************************/
 
         require('vendor/autoload.php');
-
-        $dotenv = new Dotenv(__DIR__);
-        $dotenv->load();
-
         DB::initialize();
 
     /********************************************************************************
