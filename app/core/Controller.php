@@ -49,7 +49,7 @@
                 ([
                     'loader'           => new Mustache_Loader_FilesystemLoader('views'),
                     'partials_loader'  => new Mustache_Loader_FilesystemLoader('views/partials'),
-                    'cache'            => 'backup/cache',
+                    'cache'            => 'cache/mustache',
                     'strict_callables' => true
                 ]);
 

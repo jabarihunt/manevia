@@ -34,4 +34,4 @@ RUN cp /var/www/html/cli/build_docs/000-default.conf /etc/apache2/sites-availabl
 	sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
 	ln -s /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf && \
 	mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
-	chmod 777 /var/www/html/core/cache
+	chmod 777 /var/www/html/cache/mustache
