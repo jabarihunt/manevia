@@ -1,7 +1,6 @@
 #!/bin/bash
 
-docker ps
-docker build ../. --build-arg PORT=8080 -t gcr.io/manevia/manevia-app:1.0.0 -t gcr.io/manevia/manevia-app:latest
+docker build . -t gcr.io/manevia/manevia-app:1.0.0 -t gcr.io/manevia/manevia-app:latest
 PORT=8080 && \
 	docker run \
 	-p 8080:${PORT} \
