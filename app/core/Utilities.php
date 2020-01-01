@@ -14,7 +14,7 @@
              * @return boolean
              ********************************************************************************/
 
-                public static function isInteger($value)
+                public static function isInteger($value): boolean
                 {
                     return(ctype_digit(strval($value)));
                 }
@@ -25,20 +25,20 @@
              * @return string
              ********************************************************************************/
 
-                public static function arrayToCsv(Array $data)
+                public static function arrayToCsv(array $data): string
                 {
-                    return count($data) > 0 ?  implode(',', $data) : '';
+                    return count($data) > 0 ? implode(',', $data) : '';
                 }
 
             /********************************************************************************
              * CSV TO ARRAY METHOD
-             * @param array $data
+             * @param string $data
              * @return array
              ********************************************************************************/
 
-                public static function csvToArray($csv)
+                public static function csvToArray(string $csv): array
                 {
-                    return is_string(trim($csv)) ? explode(',', $csv) : [];
+                    return strlen(trim($csv)) > 0 ? explode(',', $csv) : [];
                 }
 
             /********************************************************************************
@@ -47,9 +47,9 @@
              * @return boolean
              ********************************************************************************/
 
-                public static function pluralToSingular($word)
+                public static function pluralToSingular(string $word): boolean
                 {
-                    if (!empty($word) && is_string($word))
+                    if (strlen($word) > 0)
                     {
                         // SET INITIAL VARIABLES
 
@@ -103,9 +103,9 @@
              * @return string
              ********************************************************************************/
 
-                public static function snakeToCamel($value, $firstLetterUpper = FALSE)
+                public static function snakeToCamel(string $value, boolean $firstLetterUpper = FALSE): string
                 {
-                    if (is_string($value))
+                    if (strlen($value) > 0)
                     {
                         $value = str_replace('_', ' ', strtolower($value));
                         $value = str_replace(' ', '', ucwords($value));
@@ -123,9 +123,9 @@
              * @return string
              ********************************************************************************/
 
-                public static function slugToCamel($value, $firstLetterUpper = FALSE)
+                public static function slugToCamel(string $value, boolean $firstLetterUpper = FALSE): string
                 {
-                    if (is_string($value))
+                    if (strlen($value) > 0)
                     {
                         $value = str_replace('-', ' ', strtolower($value));
                         $value = str_replace(' ', '', ucwords($value));
@@ -153,7 +153,7 @@
              * @return boolean
              ********************************************************************************/
 
-                public static function validateEmail($email)
+                public static function validateEmail(string $email): boolean
                 {
                     // SET INITIAL RETURN VARIABLE
 
@@ -189,7 +189,7 @@
              * @return string
              ********************************************************************************/
 
-                public static function getClientIP()
+                public static function getClientIP(): string
                 {
                     $ip = '';
 
@@ -198,6 +198,77 @@
                     else {$ip = $_SERVER['REMOTE_ADDR'];}
 
                     return $ip;
+                }
+
+            /********************************************************************************
+             * VALIDATE EMAIL METHOD
+             * @param string $url
+             * @param string $type
+             * @param array $headers
+             * @param array $fields
+             * @throws ErrorException
+             * @return string
+             ********************************************************************************/
+
+                const HTTP_REQUEST_TYPE_GET  = 'GET';
+                const HTTP_REQUEST_TYPE_POST = 'POST';
+
+                public static function makeHttpRequest(string $url, string $type = 'POST', array $headers = [], array $fields = []): string
+                {
+                    if (filter_var($url, FILTER_VALIDATE_URL) !== FALSE)
+                    {
+                        // INSTANTIATE CURL REQUEST -> SET URL | SET AS POST REQUEST | SET TO RETURN INSTEAD OF ECHO
+
+                            $curl = curl_init();
+                            curl_setopt($curl, CURLOPT_URL, $url);
+                            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+                            if ($type == self::HTTP_REQUEST_TYPE_POST) {curl_setopt($curl, CURLOPT_POST, true);}
+
+                        // ADD FIELDS TO REQUEST
+
+                            if (!empty($fields) && count($fields) > 0 )
+                            {
+                                // BUILD FIELD STRING
+
+                                    $fieldsString = '';
+                                    foreach ($fields as $key => $value) {$fieldsString .= $key . "=" . urlencode($value) . '&';}
+                                    $fieldsString = rtrim($fieldsString, '&');
+
+                                // ADD FIELD/POST RELATED CURL OPTIONS
+
+                                    if ($type == self::HTTP_REQUEST_TYPE_POST)
+                                    {
+                                        curl_setopt($curl, CURLOPT_POST, count($fields));
+                                        curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldsString);
+                                    }
+                            }
+
+                        // ADD HEADERS TO REQUEST
+
+                            if (!empty($headers) && count($headers) > 0 )
+                            {
+                                // BUILD HEADERS ARRAY
+
+                                    $headersArray = [];
+                                    foreach ($headers as $key => $value) {$headersArray[] = "{$key}: {$value}";}
+                                    if (!empty($fieldsString)) {$headersArray[] = 'Content-Length: ' . strlen($fieldsString);}
+
+                                // ADD HEADER RELATED FIELD OPTIONS
+
+                                    curl_setopt($curl, CURLOPT_HEADER, true);
+                                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headersArray);
+                            }
+                            else {curl_setopt($curl, CURLOPT_HEADER, false);}
+
+                        // MAKE CURL REQUEST -> CLOSE CONNECTION | RETURN RESULT
+
+                            $result = curl_exec($curl);
+
+                            curl_close($curl);
+                            return $result;
+                    }
+                    else {throw new ErrorException('Invalid URL passed to Utilities:makePostRequest()');}
                 }
         }
 
