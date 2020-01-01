@@ -137,6 +137,17 @@
                 }
 
             /********************************************************************************
+             * SWAP MULTIPLE SPACES FOR ONE
+             * @param string $string value to be converted to camel case.
+             * @return string
+             ********************************************************************************/
+
+                public static function swapMultipleSpacesForOne(string $string): string
+                {
+                    return strlen($string) >= 2 ? preg_replace('!\s+!', ' ', $string) : $string;
+                }
+
+            /********************************************************************************
              * VALIDATE EMAIL METHOD
              * @param string $email
              * @return boolean
