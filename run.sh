@@ -1,15 +1,15 @@
 #!/bin/bash
 
-docker build . -t gcr.io/manevia/manevia-app:1.0.0 -t gcr.io/manevia/manevia-app:latest
-PORT=8080 && \
-	docker run \
-	-p 8080:${PORT} \
-	-e PORT=${PORT} \
-	-e DATABASE_HOST='DATABASE-HOST-OR-IP' \
-	-e DATABASE_NAME='manevia_db' \
-	-e DATABASE_USER='manevia-db-user' \
-	-e DATABASE_PASSWORD='SUPER-SECRET-PASSWORD' \
-	-e DATABASE_SOCKET=NULL \
-	-e DATABASE_SESSION_STORE_IN_DB=0 \
-	-e DATABASE_SESSION_EXPIRES=60 \
-	gcr.io/manevia/manevia-app
+source ".env"
+docker build . -t ${DOCKER_TAG_VERSION} -t ${DOCKER_TAG_LATEST}
+docker run \
+-p 8080:${DOCKER_PORT} \
+	-e PORT=${DOCKER_PORT} \
+	-e DATABASE_HOST="${DATABASE_HOST}" \
+	-e DATABASE_NAME="${DATABASE_NAME}" \
+	-e DATABASE_USER="${DATABASE_USER}" \
+	-e DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
+	-e DATABASE_SOCKET=${DATABASE_SOCKET} \
+	-e DATABASE_SESSION_STORE_IN_DB=${DATABASE_SESSION_STORE_IN_DB} \
+	-e DATABASE_SESSION_EXPIRES=${DATABASE_SESSION_EXPIRES} \
+	${DOCKER_APP}
