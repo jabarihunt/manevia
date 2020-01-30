@@ -16,10 +16,10 @@
 
         /********************************************************************************
          * CONSTRUCT METHOD
-         * @param boolean $authorizationRequired
+         * @param bool $authorizationRequired
          ********************************************************************************/
 
-            public function __construct($authorizationRequired = FALSE)
+            public function __construct(bool $authorizationRequired = FALSE)
             {
                 // CHECK IF REQUEST REQUIRED AUTHORIZATION -> RESPOND ACCORDINGLY
 
@@ -40,10 +40,11 @@
         /********************************************************************************
          * LOAD TEMPLATE METHOD
          * @param string $template
-         * @param mixed $templateValues
+         * @param array $templateValues
+         * @return void
          ********************************************************************************/
 
-            protected function loadTemplate($template, $templateValues = NULL)
+            protected function loadTemplate($template, array $templateValues = NULL): void
             {
                 $mustache = new Mustache_Engine
                 ([
@@ -59,18 +60,21 @@
 
         /********************************************************************************
          * CHECK AUTHORIZATION METHOD
+         * @return bool
          ********************************************************************************/
 
-            private function requestIsAuthorized()
+            private function requestIsAuthorized(): bool
             {
                 // DO CHECK AUTHORIZATION
+                return TRUE;
             }
 
         /********************************************************************************
          * SET GLOBAL INTERNATIONALIZATION METHOD
+         * @return void
          ********************************************************************************/
 
-            private function setI18n()
+            private function setI18n(): void
             {
                 /* GETTEXT EXAMPLE
 
@@ -107,9 +111,10 @@
 
         /********************************************************************************
          * SET LOCALE METHOD
+         * @return void
          ********************************************************************************/
 
-            private function setLocale()
+            private function setLocale(): void
             {
                 // SET INITIAL VARIABLES
 
@@ -136,13 +141,10 @@
 
         /********************************************************************************
          * SET OPEN GRAPH METHOD
-         * @var string $type
-         * @var string $title
-         * @var string $url
-         * @var string $image
+         * @return void
          ********************************************************************************/
 
-            private function setOpenGraph()
+            private function setOpenGraph(): void
             {
                 /* EXAMPLE OF BASIC OPEN GRAPH
 
@@ -160,9 +162,10 @@
         /********************************************************************************
          * SET PAGE TITLE METHOD
          * @param string $pageTitle
+         * @return void
          ********************************************************************************/
 
-            protected function setPageTitle($pageTitle)
+            protected function setPageTitle(string $pageTitle): void
             {
                 if (is_string($pageTitle)) {$this->openGraph['title'] = $pageTitle;}
             }

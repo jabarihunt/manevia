@@ -11,10 +11,10 @@
 
         /********************************************************************************
          * CONSTRUCT METHOD
-         * @param boolean $useCors
+         * @param bool $useCors
          ********************************************************************************/
 
-            public function __construct($useCors = TRUE)
+            public function __construct(bool $useCors = TRUE)
             {
                 // SET CONTENT TYPE HEADER | SET CORS HEADERS
 
@@ -47,10 +47,10 @@
 
         /********************************************************************************
          * REQUEST IS AUTHORIZED METHOD
-         * @return boolean
+         * @return bool
          ********************************************************************************/
 
-            protected function requestIsAuthorized()
+            protected function requestIsAuthorized(): bool
             {
                 // SET INITIAL VARIABLES
 
@@ -76,7 +76,7 @@
          * @return array
          ********************************************************************************/
 
-            protected function getJSONData()
+            protected function getJSONData(): ?array
             {
                 $data = file_get_contents("php://input");
                 return !empty($data) ? json_decode($data, TRUE) : NULL;
@@ -85,11 +85,12 @@
         /********************************************************************************
          * SET RESPONSE MESSAGE METHOD
          * @param array $data
-         * @param integer $htmlCode
+         * @param int $htmlCode
          * @param string $errorMessage
+         * @return void
          ********************************************************************************/
 
-            protected function setResponse(Array $data = NULL, $htmlCode = 200, $errorMessage = NULL)
+            protected function setResponse(array $data = NULL, int $htmlCode = 200, string $errorMessage = NULL): void
             {
                 // INSTANTIATE RESPONSE ARRAY | BUILD RESPONSE
 
