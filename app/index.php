@@ -1,8 +1,17 @@
 <?php
-error_reporting(E_ALL); ini_set('display_errors', 1);
-    use Dotenv\Dotenv;
+
     use Manevia\DB;
     use Manevia\Utilities;
+
+    /********************************************************************************
+     * SET ERRORS TO TRUE FOR DEVELOPMENT ENVIRONMENTS
+     ********************************************************************************/
+
+        if (getenv('ENVIRONMENT') === 'development')
+        {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+        }
 
     /********************************************************************************
      * DEFAULT AND APPROVED PAGES (default MUST be on first level of approved pages array!)
