@@ -2,7 +2,7 @@
 
     /********************************************************************************
      * UTILITIES CLASS
-     * PHP version 7.1
+     * PHP version 7.1+
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
@@ -11,10 +11,10 @@
             /********************************************************************************
              * IS INTEGER METHOD
              * @param mixed $value
-             * @return boolean
+             * @return bool
              ********************************************************************************/
 
-                public static function isInteger($value): boolean
+                public static function isInteger($value): bool
                 {
                     return(ctype_digit(strval($value)));
                 }
@@ -44,10 +44,10 @@
             /********************************************************************************
              * PLURAL TO SINGULAR
              * @param string $word Word to be made singular
-             * @return boolean
+             * @return bool
              ********************************************************************************/
 
-                public static function pluralToSingular(string $word): boolean
+                public static function pluralToSingular(string $word): bool
                 {
                     if (strlen($word) > 0)
                     {
@@ -99,11 +99,11 @@
             /********************************************************************************
              * SNAKE CASE TO CAMEL CASE METHOD
              * @param string $value String value to be converted to camel case.
-             * @param boolean $firstLetterUpper Determines if the first letter should be upper case
+             * @param bool $firstLetterUpper Determines if the first letter should be upper case
              * @return string
              ********************************************************************************/
 
-                public static function snakeToCamel(string $value, boolean $firstLetterUpper = FALSE): string
+                public static function snakeToCamel(string $value, bool $firstLetterUpper = FALSE): string
                 {
                     if (strlen($value) > 0)
                     {
@@ -119,11 +119,11 @@
             /********************************************************************************
              * SLUG TO CAMEL CASE METHOD
              * @param string $value String value to be converted to camel case.
-             * @param boolean $firstLetterUpper Determines if the first letter should be upper case
+             * @param bool $firstLetterUpper Determines if the first letter should be upper case
              * @return string
              ********************************************************************************/
 
-                public static function slugToCamel(string $value, boolean $firstLetterUpper = FALSE): string
+                public static function slugToCamel(string $value, bool $firstLetterUpper = FALSE): string
                 {
                     if (strlen($value) > 0)
                     {
@@ -150,10 +150,10 @@
             /********************************************************************************
              * VALIDATE EMAIL METHOD
              * @param string $email
-             * @return boolean
+             * @return bool
              ********************************************************************************/
 
-                public static function validateEmail(string $email): boolean
+                public static function validateEmail(string $email): bool
                 {
                     // SET INITIAL RETURN VARIABLE
 
