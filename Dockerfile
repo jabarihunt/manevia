@@ -7,15 +7,17 @@
 # docker rm $(docker ps -a -q)
 #############################################################################################
 
-# Use the official PHP 7.3 image.
+# Use the official PHP 7.4 image.
 # https://hub.docker.com/_/php
-FROM php:7.3-apache
+FROM php:7.4-apache
 
 # Install and setup crons
 # Install PHP extensions & Apache Modules
 # Remove old Apache configuration
 RUN docker-php-ext-install mysqli && \
 	docker-php-ext-install gettext && \
+    pecl install redis && \
+    docker-php-ext-enable redis && \
 	service apache2 stop && \
     a2enmod rewrite && \
     a2enmod expires && \

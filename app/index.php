@@ -4,8 +4,11 @@
     use Manevia\Utilities;
 
     /********************************************************************************
-     * SET ERRORS TO TRUE FOR DEVELOPMENT ENVIRONMENTS
+     * SET CACHE IN INI | SET ERRORS TO TRUE FOR DEVELOPMENT ENVIRONMENTS
      ********************************************************************************/
+
+        ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
+        ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
 
         if (getenv('ENVIRONMENT') === 'development')
         {
