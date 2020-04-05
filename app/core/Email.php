@@ -1,5 +1,7 @@
 <?php namespace Manevia;
 
+    use PHPMailer\PHPMailer\PHPMailer;
+
     /**
      *	Email Helper Class
      *	AUTHOR: Jabari J. Hunt
@@ -13,14 +15,8 @@
      *
      **/
 
-    ////////////////////////////////////////////////////////////////
-    // REQUIRED LIBRARIES  | CLASS DECLARATION
-    ////////////////////////////////////////////////////////////////
+        class Email {
 
-        require_once($_SERVER['DOCUMENT_ROOT'] . '/vendors/phpmailer/PHPMailerAutoload.php');
-
-        class Email
-        {
             //////////////////////////////////////////////
             //  CLASS VARIABLES
             //////////////////////////////////////////////
@@ -37,50 +33,53 @@
             // INITIALIZER METHOD
             //////////////////////////////////////////////
 
-                private static function initialize()
-                {
+                private static function initialize(): PHPMailer {
+
                     // SET HEADER AND FOOTER FOR MESSAGES
 
-						self::$admin        = $_ENV['EMAIL_ADMIN']);
-                    	self::$templatePath = $_ENV['EMAIL_TEMPLATE_PATH']);
+						self::$admin        = getenv(['EMAIL_ADMIN']);
+                    	self::$templatePath = getenv(['EMAIL_TEMPLATE_PATH']);
 
-                        if (empty(self::$header) || empty(self::footer))
-                        {
+                        if (empty(self::$header) || empty(self::footer)) {
+
                             self::$header = file_get_contents($_SERVER['DOCUMENT_ROOT'] . self::$templatePath . 'header.html');
                             self::$footer = file_get_contents($_SERVER['DOCUMENT_ROOT'] . self::$templatePath . 'footer.html');
+
                         }
 
                     // INSTANTIATE PHPMAILER OBJECT | ADD DEFAULT SETTINGS | RETURN MAIL OBJECT
 
-                    	$testMode = (boolean) $_ENV['EMAIL_TEST_MODE'];
+                    	$testMode = (boolean) getenv(['EMAIL_TEST_MODE']);
 
                         $mail = new PHPMailer;
-                        $mail->isHTML((boolean) $_ENV['EMAIL_IS_HTML']);
+                        $mail->isHTML((boolean) getenv['EMAIL_IS_HTML']);
                         $mail->isSMTP();
-                        $mail->SMTPAuth   = (boolean) $_ENV['EMAIL_SMTP_AUTH'];
-                        $mail->SMTPSecure = $_ENV['EMAIL_SMTP_SECURE'];
-                        $mail->Host       = $_ENV['EMAIL_HOST'];
-                        $mail->Username   = $_ENV['EMAIL_USERNAME'];
-                        $mail->Password   = $_ENV['EMAIL_PASSWORD'];
-                        $mail->Port       = $_ENV['EMAIL_PORT'];
-                        $mail->From       = $_ENV['EMAIL_FROM_ADDRESS'];
-                        $mail->FromName   = $_ENV['EMAIL_FROM_NAME'];
+                        $mail->SMTPAuth   = (boolean) getenv(['EMAIL_SMTP_AUTH']);
+                        $mail->SMTPSecure = getenv(['EMAIL_SMTP_SECURE']);
+                        $mail->Host       = getenv(['EMAIL_HOST']);
+                        $mail->Username   = getenv(['EMAIL_USERNAME']);
+                        $mail->Password   = getenv(['EMAIL_PASSWORD']);
+                        $mail->Port       = getenv(['EMAIL_PORT']);
+                        $mail->From       = getenv(['EMAIL_FROM_ADDRESS']);
+                        $mail->FromName   = getenv(['EMAIL_FROM_NAME']);
 
-                        if ($testMode)
-                        {
+                        if ($testMode) {
+
                             $mail->SMTPDebug   = 3;       // TESTING ONLY -> Enable verbose debug output
                             $mail->Debugoutput = 'html';  // TESTING ONLY -> Enable HTML debugging output
+
                         }
 
                         return $mail;
+
                 }
 
             //////////////////////////////////////////////
             //  SEND EMAIL METHODS
             //////////////////////////////////////////////
 
-                public static function fromContactForm($name, $fromAddress, $subject, $message)
-                {
+                public static function fromContactForm(string $name, string $fromAddress, string $subject, string $message): bool {
+
                     // SET INITIAL VARIABLES
 
                         $emailSent   = FALSE;
@@ -90,13 +89,13 @@
 
                     // VALIDATE PASSED VARIABLES
 
-                        if
-                        (
+                        if (
                             !empty($name) &&
                             !empty($fromAddress) &&
                             !empty($subject) &&
-                            !empty($message))
-                        {
+                            !empty($message)
+                        ) {
+
                             // INITIALIZE & SETUP EMAIL
 
                                 $mail = self::initialize();
@@ -106,16 +105,20 @@
 
                             // SEND EMAIL
 
-                                if($mail->send()) {$emailSent = TRUE;}
+                                if($mail->send()) {
+                                    $emailSent = TRUE;
+                                }
+
                         }
 
                     // RETURN RESULT
 
                         return $emailSent;
+
                 }
 
-                public static function receivedMessageNotification($toUserId, $fromUserId, $fromUserMessage)
-                {
+                public static function receivedMessageNotification(int $toUserId, int $fromUserId, string $fromUserMessage): bool {
+
                     // SET INITIAL VARIABLES
 
                         $emailSent = FALSE;
@@ -124,8 +127,12 @@
 
                     // VERIFY USERS EXIST | SEND EMAIL
 
-                        if (is_object($toUser) && is_object($fromUser) && !empty($fromUserMessage))
-                        {
+                        if (
+                            is_object($toUser) &&
+                            is_object($fromUser) &&
+                            !empty($fromUserMessage)
+                        ) {
+
                             // INITIALIZE EMAIL OBJECT | ADD -> RECEIVER, SUBJECT
 
                                 $mail = self::initialize();
@@ -142,7 +149,10 @@
 
                             // SEND EMAIL
 
-                                if($mail->send()) {$emailSent = TRUE;}
+                                if($mail->send()) {
+                                    $emailSent = TRUE;
+                                }
+
                         }
 
                     // RETURN RESULT
@@ -150,8 +160,8 @@
                         return $emailSent;
                 }
 
-                public static function validation($type, $to, $username, $userId, $code)
-                {
+                public static function validation(string $type, string $to, string $username, int $userId, string $code): bool {
+
                     // SET INITIAL VARIABLES
 
                         $emailSent = FALSE;
@@ -163,8 +173,7 @@
 
                     // VALIDATE PASSED VARIABLES
 
-                        if
-                        (
+                        if (
                             (
                                 $type == User::VALIDATION_TYPE_EMAIL ||
                                 $type == User::VALIDATION_TYPE_PASSWORD
@@ -173,8 +182,7 @@
                             !empty($username) &&
                             is_int($userId) &&
                             !empty($code)
-                        )
-                        {
+                        ) {
                             // INITIALIZE EMAIL OBJECT | ADD -> RECEIVER, SUBJECT
 
                                 $mail = self::initialize();
@@ -191,13 +199,18 @@
 
                             // SEND EMAIL
 
-                                if($mail->send()) {$emailSent = TRUE;}
+                                if($mail->send()) {
+                                    $emailSent = TRUE;
+                                }
+
                         }
 
                     // RETURN RESULT
 
                         return $emailSent;
+
                 }
+
         }
 
 ?>
