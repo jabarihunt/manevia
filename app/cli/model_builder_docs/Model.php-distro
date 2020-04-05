@@ -2,18 +2,20 @@
 
     /********************************************************************************
      * [MODEL_NAME_UPPERCASE] MODEL
-     * PHP version 5.6+
+     * PHP version 7.1+
      * Auto Generated via ../cli/model_builder_docs/BaseModelBuilder.php
      ********************************************************************************/
 
-        final class [MODEL_NAME] extends [MODEL_NAME]Model
-        {
+        final class [MODEL_NAME] extends [MODEL_NAME]Model {
+
             /********************************************************************************
              * CONSTRUCT METHOD
              * @param array $data
              ********************************************************************************/
 
-                protected function __construct(Array $data) {parent::__construct($data);}
+                protected function __construct(Array $data) {
+                    parent::__construct($data);
+                }
 
             /////////////////////////////////////////////////////////////////////////////////
             // CRUD CALLBACK METHODS
@@ -47,6 +49,9 @@
             // CUSTOM METHODS
             // Place any custom methods that you need below.
             /////////////////////////////////////////////////////////////////////////////////
+
+
+
         }
 
 ?>
