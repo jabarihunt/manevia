@@ -50,7 +50,6 @@
              * @var string $password Database Password
              * @var string $socket Database Socket
              * @var boolean $useDBSessions Value designating if sessions should be used
-             * @var string $sessionName Session Name
              * @var int $expires Session Expiration Time
              ********************************************************************************/
 
@@ -65,7 +64,6 @@
                 // SESSION VARIABLES
 
                     private static $useDBSessions;
-                    //private static $sessionName;
                     private static $sessionExpires;
 
             /********************************************************************************
