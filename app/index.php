@@ -57,23 +57,24 @@
 
                             // GET PAGE NAME | IF EXTRACTED PAGE IS AN ARRAY, UPDATE ARRAY HOLDER
 
-                                if (empty($page)) {$page .= Utilities::slugToCamel($extractedPage);}
-                                else {$page .= Utilities::slugToCamel($extractedPage, TRUE);}
+                                if (empty($page)) {
+                                    $page .= Utilities::slugToCamel($extractedPage);
+                                } else {
+                                    $page .= Utilities::slugToCamel($extractedPage, TRUE);
+                                }
 
-                                if (!empty($arrayHolder[$extractedPage]) && is_array($arrayHolder[$extractedPage])) {$arrayHolder = $arrayHolder[$extractedPage];}
+                                if (!empty($arrayHolder[$extractedPage]) && is_array($arrayHolder[$extractedPage])) {
+                                    $arrayHolder = $arrayHolder[$extractedPage];
+                                }
 
                         } else {
-
                             array_unshift($values, $extractedPage);
-
                         }
 
                 } while ($pageIsArray);
 
             } else {
-
                 $page = $defaultPage;
-
             }
 
         // IF NO VALID PAGE EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
@@ -86,9 +87,7 @@
             }
 
             if (!is_array($values)) {
-
                 $values = [];
-
             }
 
     /********************************************************************************

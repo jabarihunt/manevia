@@ -18,7 +18,6 @@
              ********************************************************************************/
 
 				const ERRORS = [
-
                     '400' => 'Bad Request',
                     '401' => 'Unauthorized',
                     '402' => 'Payment Required',
@@ -61,7 +60,6 @@
                     '510' => 'Not Extended',
                     '511' => 'Network Authentication Required',
                     '599' => 'Network Connect Timeout Error'
-
 				];
 
                 public $errorCode;
@@ -79,9 +77,7 @@
                     // MAKE SURE A VALID ERROR CODE WAS PASSED. IF NOT, REDIRECT TO 404
 
                         if (!empty($values) && array_key_exists($values[0], self::ERRORS)) {
-
                             $this->errorCode = $values[0];
-
                         }
                         else {
 
