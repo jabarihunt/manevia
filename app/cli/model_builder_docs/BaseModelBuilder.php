@@ -20,15 +20,14 @@
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class BaseModelBuilder
-        {
+        final class BaseModelBuilder {
+
             /********************************************************************************
              * CLASS CONSTANTS
              * @var array SEARCH Array of place holders in BaseModel.php
              ********************************************************************************/
 
-                const SEARCH =
-                [
+                const SEARCH = [
                     '[MODEL_NAME]',
                     '[MODEL_NAME_FIRST_LETTER_LOWERCASE]',
                     '[MODEL_NAME_UPPERCASE]',
@@ -56,8 +55,7 @@
                 private $baseModel;
                 private $model;
 
-                private $replace =
-                [
+                private $replace = [
                     'modelName'                      => '',
                     'modelNameFirstLetterLowercase'  => '',
                     'modelNameUppercase'             => '',
@@ -80,57 +78,77 @@
              * CLASS CONSTRUCTOR AND DESTRUCTOR
              ********************************************************************************/
 
-                public function __construct()
-                {
+                public function __construct() {
+
                     // INITIALIZE DATABASE | GET BASE MODEL | GET TABLE DATA
 
                         $this->prompt("\nStarting Base Model Builder...\n", FALSE);
                         DB::initialize(FALSE);
 
                         $this->baseModel = file_get_contents(__DIR__ . '/BaseModel.php-distro');
-                        if (!empty($this->baseModel)) {$this->prompt('Retrieved base model template');}
+
+                        if (!empty($this->baseModel)) {
+                            $this->prompt('Retrieved base model template');
+                        }
 
                         $this->model = file_get_contents(__DIR__ . '/Model.php-distro');
-                        if (!empty($this->model)) {$this->prompt('Retrieved model template');}
+
+                        if (!empty($this->model)) {
+                            $this->prompt('Retrieved model template');
+                        }
 
                         $tableNames = $this->getTables();
-                        if (is_array($tableNames) && count($tableNames) > 0) {$this->prompt('Preparing to build ' . count($tableNames) . ' table(s)');}
+
+                        if (is_array($tableNames) && count($tableNames) > 0) {
+                            $this->prompt('Preparing to build ' . count($tableNames) . ' table(s)');
+                        }
 
                     // BUILD BASE MODEL FOR EACH TABLE AND SAVE
 
-                        foreach ($tableNames as $tableName)
-                        {
+                        foreach ($tableNames as $tableName) {
+
                             // CREATE MODEL DATA | PROMPT USER | RESET REPLACE ARRAY
 
                                 $tableBuilt = $this->buildBaseModel($tableName);
 
-                                if ($tableBuilt) {$this->prompt("COMPLETE: {$tableName}");}
-                                else {$this->prompt("ERROR: {$tableName}");}
+                                if ($tableBuilt) {
+                                    $this->prompt("COMPLETE: {$tableName}");
+                                } else {
+                                    $this->prompt("ERROR: {$tableName}");
+                                }
 
                                 $this->resetReplaceArray();
+
                         }
+
                 }
 
-                public function __destruct() {$this->prompt("\n", FALSE);}
+                public function __destruct() {
+                    $this->prompt("\n", FALSE);
+                }
 
             /********************************************************************************
              * GET TABLES METHOD
              * @return array
              ********************************************************************************/
 
-                private function getTables()
-                {
+                private function getTables(): array {
+
                     // SET INITIAL VARIABLES | GET TABLE NAMES | RETURN TABLES
 
                         $tableNames = [];
                         $results    = DB::query('SHOW TABLES');
 
-                        while($row = $results->fetch_row())
-                        {
-                            if ($row[0] != 'sessions') {$tableNames[] = $row[0];}
+                        while($row = $results->fetch_row()) {
+
+                            if ($row[0] != 'sessions') {
+                                $tableNames[] = $row[0];
+                            }
+
                         }
 
                         return $tableNames;
+
                 }
 
             /********************************************************************************
@@ -139,8 +157,8 @@
              * @return boolean
              ********************************************************************************/
 
-                private function buildBaseModel($tableName)
-                {
+                private function buildBaseModel(string $tableName): bool {
+
                     // GET TABLE COLUMN INFO | SET INITIAL RETURN VALUE
 
                         $results    = DB::query("DESCRIBE {$tableName}");
@@ -172,11 +190,13 @@
                     *    ["Extra"]=>
                     *    string(0) ""
                     */
-                        while($column = $results->fetch_assoc())
-                        {
+                        while($column = $results->fetch_assoc()) {
+
                             // DO ANY VALUE PREP THAT IS REQUIRED
 
-                                if (strpos($column['Type'], '(') !== FALSE) {$column['Type'] = stristr($column['Type'], '(', TRUE);}
+                                if (strpos($column['Type'], '(') !== FALSE) {
+                                    $column['Type'] = stristr($column['Type'], '(', TRUE);
+                                }
 
                             // SET REMAINING REPLACE VARIABLES
 
@@ -185,26 +205,35 @@
                                 $this->replace['getters']                       .= '                final public function get' . Utilities::snakeToCamel($column['Field'], TRUE) . "() {return \$this->{$column['Field']};}\n";
                                 $this->replace['allColumnNames']                .= "`{$column['Field']}`, ";
 
-                                if (strtolower($column['Key']) != 'pri')
-                                {
+                                if (strtolower($column['Key']) != 'pri') {
+
                                     $this->replace['createQueryColumnNames']         .= "`{$column['Field']}`, ";
                                     $this->replace['createQueryColumnPlaceholders'] .= '?, ';
                                     $this->replace['createMethodBindDataString']    .= "\$data['{$column['Field']}'], ";
 
-                                    if (strtolower($column['Null']) == 'no')
-                                    {
+                                    if (strtolower($column['Null']) == 'no') {
                                         $this->replace['createMethodValidationCriteria'] .= "                            !empty(\$data['{$column['Field']}']) &&\n";
                                     }
 
-                                    if (in_array($column['Type'], DB::DATA_TYPE_INTEGER)) {$this->replace['createMethodBindTypes'] .= 'i';}
-                                    else {$this->replace['createMethodBindTypes'] .= 's';}
-                                }
-                                else {$this->replace['primaryKey'] = $column['Field'];}
+                                    if (in_array($column['Type'], DB::DATA_TYPE_INTEGER)) {
+                                        $this->replace['createMethodBindTypes'] .= 'i';
+                                    } else {
+                                        $this->replace['createMethodBindTypes'] .= 's';
+                                    }
 
-                                if (strtolower($column['Null']) == 'no') {$this->replace['classConstantRequiredFields'] .= "'{$column['Field']}', ";}
+                                } else {
+                                    $this->replace['primaryKey'] = $column['Field'];
+                                }
+
+                                if (strtolower($column['Null']) == 'no') {
+                                    $this->replace['classConstantRequiredFields'] .= "'{$column['Field']}', ";
+                                }
+
                         }
 
-                        if ($this->replace['createMethodValidationCriteria'] == '') {$this->replace['createMethodValidationCriteria'] = '                            TRUE';}
+                        if ($this->replace['createMethodValidationCriteria'] == '') {
+                            $this->replace['createMethodValidationCriteria'] = '                            TRUE';
+                        }
 
                     // REMOVE UNNEEDED CHARACTERS FROM END OF VARIABLES
 
@@ -225,33 +254,40 @@
                         $baseModelFile = __DIR__ . "/../../models/base/{$this->replace['modelName']}Model.php";
                         $fileSaved     = file_put_contents($baseModelFile, $baseModel);
 
-                        if ($fileSaved !== FALSE)
-                        {
+                        if ($fileSaved !== FALSE) {
+
                             $modelFile = __DIR__ . "/../../models/{$this->replace['modelName']}.php";
 
-                            if (!file_exists($modelFile))
-                            {
+                            if (!file_exists($modelFile)) {
+
                                 $model     = str_replace(BaseModelBuilder::SEARCH, $this->replace, $this->model);
                                 $fileSaved = file_put_contents($modelFile, $model);
+
                             }
+
                         }
 
                     // VERIFY FILE(S) WERE SAVED AND RETURN RESULT
 
-                        if ($fileSaved !== FALSE) {$modelBuilt = TRUE;}
+                        if ($fileSaved !== FALSE) {
+                            $modelBuilt = TRUE;
+                        }
+
                         return $modelBuilt;
+
                 }
 
             /********************************************************************************
              * RESET REPLACE ARRAY METHOD
+             * @return void
              ********************************************************************************/
 
-                private function resetReplaceArray()
-                {
-                    foreach ($this->replace as $key => $value)
-                    {
+                private function resetReplaceArray(): void {
+
+                    foreach ($this->replace as $key => $value) {
                         $this->replace[$key] = '';
                     }
+
                 }
 
             /********************************************************************************
@@ -260,11 +296,16 @@
              * @param boolean $displayDash
              ********************************************************************************/
 
-                private function prompt($message, $displayDash = TRUE)
-                {
-                    if ($displayDash) {$message = '- ' . $message;}
+                private function prompt(string $message, bool $displayDash = TRUE): void {
+
+                    if ($displayDash) {
+                        $message = '- ' . $message;
+                    }
+
                     echo "{$message}\n";
+
                 }
+
         }
 
         new BaseModelBuilder();
