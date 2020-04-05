@@ -10,10 +10,11 @@
         ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
         ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
 
-        if (getenv('ENVIRONMENT') === 'development')
-        {
+        if (getenv('ENVIRONMENT') === 'development') {
+
             error_reporting(E_ALL);
             ini_set('display_errors', 1);
+
         }
 
     /********************************************************************************
@@ -43,39 +44,48 @@
 
         //  BUILD PAGE NAME
 
-            if (!empty($values[0]))
-            {
-                do
-                {
+            if (!empty($values[0])) {
+
+                do {
+
                     // GET EXTRACTED PAGE > SEE IF IT EXISTS IN APPROVED PAGES ARRAY AS A STRING OR ARRAY
 
                         $extractedPage = strtolower(array_shift($values));
                         $pageIsArray   = key_exists($extractedPage, $arrayHolder);
 
-                        if (in_array($extractedPage, $arrayHolder) || $pageIsArray)
-                        {
+                        if (in_array($extractedPage, $arrayHolder) || $pageIsArray) {
+
                             // GET PAGE NAME | IF EXTRACTED PAGE IS AN ARRAY, UPDATE ARRAY HOLDER
 
                                 if (empty($page)) {$page .= Utilities::slugToCamel($extractedPage);}
                                 else {$page .= Utilities::slugToCamel($extractedPage, TRUE);}
 
                                 if (!empty($arrayHolder[$extractedPage]) && is_array($arrayHolder[$extractedPage])) {$arrayHolder = $arrayHolder[$extractedPage];}
+
+                        } else {
+
+                            (array_unshift($values, $extractedPage));
+
                         }
-                        else (array_unshift($values, $extractedPage));
-                }
-                while ($pageIsArray);
+
+                } while ($pageIsArray);
+
+            } else {
+                $page = $defaultPage;
             }
-            else {$page = $defaultPage;}
 
         // IF NO VALID PAGE EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
 
-            if (empty($page))
-            {
+            if (empty($page)) {
+
                 header('Location: /error/404');
                 exit;
+
             }
 
-            if (!is_array($values)) {$values = [];}
+            if (!is_array($values)) {
+                $values = [];
+            }
 
     /********************************************************************************
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
