@@ -9,8 +9,8 @@
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        class Model
-        {
+        class Model {
+
             /********************************************************************************
              * CONSTRUCT METHOD
              *
@@ -20,14 +20,14 @@
              * @param mixed $data An array values used to create the model
              ********************************************************************************/
 
-                protected function __construct(Array $data)
-                {
+                protected function __construct(array $data) {
+
                     // ADD DATA TO MODEL IF THE DATA FIELD ALREADY EXISTS
 
-                        foreach ($data as $field => $value)
-                        {
+                        foreach ($data as $field => $value) {
                             if (property_exists($this, $field)) {$this->$field = $value;}
                         }
+
                 }
 
             /********************************************************************************
@@ -41,8 +41,8 @@
              * @return boolean
              ********************************************************************************/
 
-                public function update(Array $data)
-                {
+                public function update(array $data): bool {
+
                     // RUN BEFORE UPDATE CALLBACK
 
                         $data = call_user_func([$this, 'beforeUpdate'], $data);
@@ -55,15 +55,20 @@
 
                     // LOOP THROUGH VALUES -> SANITIZE, ADD TO UPDATE QUERY PARTS
 
-                        foreach ($data as $field => $value)
-                        {
+                        foreach ($data as $field => $value) {
+
                             $data[$field] = DB::sanitize($value, static::DATA_TYPES[$field]);
                             $data[$field] = &$data[$field];    // ADDED TO SATISFY THE call_user_func_array() METHOD
                             $set         .= "`{$field}` = ?, ";
 
-                            if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_INTEGER)) {$bindTypes .= 'i';}
-                            else if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_REAL)) {$bindTypes .= 'd';}
-                            else {$bindTypes .= 's';}
+                            if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_INTEGER)) {
+                                $bindTypes .= 'i';
+                            } else if (in_array(static::DATA_TYPES[$field], DB::DATA_TYPE_REAL)) {
+                                $bindTypes .= 'd';
+                            } else {
+                                $bindTypes .= 's';
+                            }
+
                         }
 
                         $set = rtrim($set, ', ');
@@ -78,21 +83,30 @@
                         call_user_func_array([&$statement, 'bind_param'], static::arrayReferenceValues($data));
                         $statement->execute();
 
-                        if ($statement->affected_rows == 1)
-                        {
+                        if ($statement->affected_rows == 1) {
+
                             unset($data[0]);
-                            foreach ($data as $field => $value) {$this->$field = $value;}
+
+                            foreach ($data as $field => $value) {
+                                $this->$field = $value;
+                            }
+
                             $updated = TRUE;
+
                         }
 
                     // RUN AFTER UPDATE CALLBACK | CLOSE STATEMENT
 
-                        if ($statement->errno == 0) {call_user_func([$this, 'afterUpdate']);}
+                        if ($statement->errno == 0) {
+                            call_user_func([$this, 'afterUpdate']);
+                        }
+
                         $statement->close();
 
                     // RETURN RESULT
 
                         return $updated;
+
                 }
 
             /********************************************************************************
@@ -100,12 +114,13 @@
              * @returns boolean
              ********************************************************************************/
 
-                public function delete()
-                {
+                public function delete(): bool {
+
                     call_user_func([$this, 'beforeDelete']);
                     $deleted = self::deleteByIds([$this->id]);
                     call_user_func([$this, 'afterDelete']);
                     return $deleted;
+
                 }
 
             /********************************************************************************
@@ -114,8 +129,8 @@
              * @return boolean
              ********************************************************************************/
 
-                public static function deleteByIds(Array $ids)
-                {
+                public static function deleteByIds(array $ids): bool {
+
                     // SET INITIAL VARIABLES
 
                         $deleted  = FALSE;
@@ -124,8 +139,13 @@
                     // CREATE STRING OF IDS | DELETE FROM THE DATABASE | RETURN RESULT
 
                         $idString = implode(',', $ids);
-                        if (!empty($idString)) {$deleted = DB::query("DELETE FROM `" . static::TABLE_NAME . "` WHERE `id` IN ({$idString})");}
+
+                        if (!empty($idString)) {
+                            $deleted = DB::query("DELETE FROM `" . static::TABLE_NAME . "` WHERE `id` IN ({$idString})");
+                        }
+
                         return $deleted;
+
                 }
 
             /********************************************************************************
@@ -135,11 +155,11 @@
              * internal static methods (create, get, etc) to create new model instances.
              ********************************************************************************/
 
-                protected static function beforeCreate(Array $data) {return $data;}
+                protected static function beforeCreate(array $data): array {return $data;}
                 protected function afterCreate() {}
-                protected static function beforeGet($id) {return $id;}
+                protected static function beforeGet($id): int {return $id;}
                 protected function afterGet() {}
-                protected function beforeUpdate(Array $data) {return $data;}
+                protected function beforeUpdate(array $data): array {return $data;}
                 protected function afterUpdate() {}
                 protected function beforeDelete() {}
                 protected function afterDelete() {}
@@ -153,19 +173,23 @@
              * @return array
              ********************************************************************************/
 
-                final protected static function sanitize(Array $data)
-                {
-                    foreach ($data as $field => $value)
-                    {
+                final protected static function sanitize(array $data): array {
+
+                    foreach ($data as $field => $value) {
+
                         // SET THE FIELD DATA TYPE | SANITIZE FIELD
 
-                            if (is_string($field) && !empty(static::DATA_TYPES[$field])) {$dataType = static::DATA_TYPES[$field];}
-                            else {$dataType = null;}
+                            if (is_string($field) && !empty(static::DATA_TYPES[$field])) {
+                                $dataType = static::DATA_TYPES[$field];
+                            } else {
+                                $dataType = null;
+                            }
 
                             $data[$field] = DB::sanitize($value, $dataType);
                     }
 
                     return $data;
+
                 }
 
             /********************************************************************************
@@ -177,17 +201,18 @@
              * @return array
              ********************************************************************************/
 
-                final protected static function arrayReferenceValues(Array $data)
-                {
+                final protected static function arrayReferenceValues(array $data): array {
+
                     $referencedValues = [];
 
-                    if (strnatcmp(phpversion(),'5.3') >= 0)
-                    {
+                    if (strnatcmp(phpversion(),'5.3') >= 0) {
                         foreach ($data as $key => $value) {$referencedValues[$key] = &$data[$key];}
                     }
 
                     return $referencedValues;
+
                 }
+
         }
 
 ?>
