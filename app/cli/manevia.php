@@ -11,32 +11,36 @@
 
     // MAKE SURE A VALID COMMAND WAS PASSED
 
-        if (!empty($argv[1]) && in_array($argv[1], VALID_COMMANDS))
-        {
+        if (!empty($argv[1]) && in_array($argv[1], VALID_COMMANDS)) {
+
             // EXECUTE COMMANDS
 
-                switch ($argv[1])
-                {
+                switch ($argv[1]) {
+
                     case 'backup-db'   : shell_exec("mysqldump --user='{$_ENV['DATABASE_USER']}' --password='{$_ENV['DATABASE_PASSWORD']}' {$_ENV['DATABASE_NAME']} > {$_ENV['WEB_ROOT']}/backup/database/backup_db-" . time() . '.sql'); break;
                     case 'deploy'      : break; //echo shell_exec('/var/www/html/cli/build.sh'); break;
                     case 'build-models': buildModels(); break;
                     case 'help'        : displayCommands(); break;
+
                 }
+
+        }  else {
+            displayCommands();
         }
-        else {displayCommands();}
 
     // BUILD MODELS FUNCTION
 
-        function buildModels()
-        {
+        function buildModels() {
+
             require('/var/www/html/cli/model_builder_docs/BaseModelBuilder.php');
             shell_exec('php /usr/local/bin/composer install --optimize-autoloader');
+
         }
 
     // DISPLAY COMMANDS FUNCTION
 
-        function displayCommands()
-        {
+        function displayCommands() {
+
             $format = "%s \r\n";
 
             // COMMAND HEADER
@@ -60,6 +64,7 @@
 
             // help
             echo sprintf($format, 'help:', "Displays all valid manevia commands.\r\n");
+
         }
 
 ?>
