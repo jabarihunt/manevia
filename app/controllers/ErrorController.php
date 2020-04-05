@@ -8,8 +8,8 @@
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class ErrorController extends Controller
-        {
+        final class ErrorController extends Controller {
+
             /********************************************************************************
              * CLASS VARIABLES
              * @var array ERRORS
@@ -17,8 +17,8 @@
              * @var string $errorMessage
              ********************************************************************************/
 
-				const ERRORS =
-				[
+				const ERRORS = [
+
                     '400' => 'Bad Request',
                     '401' => 'Unauthorized',
                     '402' => 'Payment Required',
@@ -61,6 +61,7 @@
                     '510' => 'Not Extended',
                     '511' => 'Network Authentication Required',
                     '599' => 'Network Connect Timeout Error'
+
 				];
 
                 public $errorCode;
@@ -71,18 +72,23 @@
              * @param array $values
              ********************************************************************************/
 
-                public function __construct(Array $values)
-                {
+                public function __construct(Array $values) {
+
                     parent::__construct();
 
                     // MAKE SURE A VALID ERROR CODE WAS PASSED. IF NOT, REDIRECT TO 404
 
-                        if (!empty($values) && array_key_exists($values[0], self::ERRORS)) {$this->errorCode = $values[0];}
-                        else
-                        {
+                        if (!empty($values) && array_key_exists($values[0], self::ERRORS)) {
+
+                            $this->errorCode = $values[0];
+
+                        }
+                        else {
+
                             header("HTTP/1.1 404 Not Found");
                             header('Location: /error/404');
                             exit;
+
                         }
 
                     // SET -> ERROR MESSAGE | HEADER HTTP CODE & MESSAGE | PAGE TITLE | TEMPLATE
@@ -91,6 +97,7 @@
                         header("HTTP/1.1 {$this->errorCode} {$this->errorMessage}");
                         $this->setPageTitle("{$this->errorCode} - {$this->errorMessage}");
                         $this->loadTemplate('error');
+
                 }
         }
 

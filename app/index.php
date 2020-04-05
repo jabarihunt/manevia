@@ -64,14 +64,16 @@
 
                         } else {
 
-                            (array_unshift($values, $extractedPage));
+                            array_unshift($values, $extractedPage);
 
                         }
 
                 } while ($pageIsArray);
 
             } else {
+
                 $page = $defaultPage;
+
             }
 
         // IF NO VALID PAGE EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
@@ -84,7 +86,9 @@
             }
 
             if (!is_array($values)) {
+
                 $values = [];
+
             }
 
     /********************************************************************************

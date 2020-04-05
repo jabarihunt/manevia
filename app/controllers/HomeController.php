@@ -8,8 +8,8 @@
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class HomeController extends Controller
-        {
+        final class HomeController extends Controller {
+
             /********************************************************************************
              * CLASS VARIABLES
              * @var string $helloWorldMessage
@@ -22,12 +22,14 @@
              * @param array $values
              ********************************************************************************/
 
-                public function __construct(Array $values)
-                {
+                public function __construct(Array $values) {
+
                     parent::__construct();
                     $this->helloWorldMessage = 'Hello World, I am Manevia!';
                     $this->loadTemplate('home');
+
                 }
+
         }
 
 ?>
