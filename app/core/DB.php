@@ -189,9 +189,10 @@
                 /********************************************************************************
                  * BACKUPMETHOD
                  * @param string $directory
+                 * @return void
                  ********************************************************************************/
 
-                    final public static function backup(string $directory) {
+                    final public static function backup(string $directory): void {
 
                         $user     = self::$user;
                         $password = self::$password;
@@ -204,9 +205,10 @@
 
                 /********************************************************************************
                  * INITIALIZE METHOD
+                 * @return void
                  ********************************************************************************/
 
-                    final public static function initialize() {
+                    final public static function initialize(): void {
                         self::get();
                     }
 
@@ -324,9 +326,10 @@
              * SESSION CONVENIENCE METHOD
              * Used to start session garbage collection. Intended to be called from a cron
              * job, but can be called from anywhere.
+             * @return void
              ********************************************************************************/
 
-                final public static function startSessionGarbageCollection() {
+                final public static function startSessionGarbageCollection(): void {
 
                     self::get();
                     self::$instance->gcSession();

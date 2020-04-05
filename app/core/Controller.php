@@ -3,8 +3,8 @@
     use Mustache_Engine;
     use Mustache_Loader_FilesystemLoader;
 
-    class Controller
-    {
+    class Controller {
+
         /********************************************************************************
          * CLASS VARIABLES
          * @var array $i18n Internationalization array
@@ -19,22 +19,22 @@
          * @param bool $authorizationRequired
          ********************************************************************************/
 
-            public function __construct(bool $authorizationRequired = FALSE)
-            {
+            public function __construct(bool $authorizationRequired = FALSE) {
+
                 // CHECK IF REQUEST REQUIRED AUTHORIZATION -> RESPOND ACCORDINGLY
 
-                    if ($authorizationRequired && !$this->requestIsAuthorized())
-                    {
+                    if ($authorizationRequired && !$this->requestIsAuthorized()) {
                         // DO AUTHORIZATION
-                    }
-                    else
-                    {
+                    } else {
+
                         // SET -> LOCALE | INTERNATIONALIZATION | MUSTACHE AUTOLOADER
 
                             $this->setLocale();
                             $this->setI18n();
                             $this->setOpenGraph();
+
                     }
+
             }
 
         /********************************************************************************
@@ -44,8 +44,8 @@
          * @return void
          ********************************************************************************/
 
-            protected function loadTemplate($template, array $templateValues = NULL): void
-            {
+            protected function loadTemplate(string $template, array $templateValues = NULL): void {
+
                 $mustache = new Mustache_Engine
                 ([
                     'loader'           => new Mustache_Loader_FilesystemLoader('views'),
@@ -54,7 +54,10 @@
                     'strict_callables' => true
                 ]);
 
-                if ($templateValues === NULL) {$templateValues = $this;}
+                if ($templateValues === NULL) {
+                    $templateValues = $this;
+                }
+
                 echo $mustache->render("{$template}.mustache", $templateValues);
             }
 
@@ -63,10 +66,11 @@
          * @return bool
          ********************************************************************************/
 
-            private function requestIsAuthorized(): bool
-            {
+            private function requestIsAuthorized(): bool {
+
                 // DO CHECK AUTHORIZATION
                 return TRUE;
+
             }
 
         /********************************************************************************
@@ -74,8 +78,8 @@
          * @return void
          ********************************************************************************/
 
-            private function setI18n(): void
-            {
+            private function setI18n(): void {
+
                 /* GETTEXT EXAMPLE
 
                     $localeDetails = localeconv();
@@ -107,6 +111,7 @@
                         $this->i18n['FormWhyPaypal']             = _('Why do you need my PayPal email?');
                     }
                 */
+
             }
 
         /********************************************************************************
@@ -114,8 +119,8 @@
          * @return void
          ********************************************************************************/
 
-            private function setLocale(): void
-            {
+            private function setLocale(): void {
+
                 // SET INITIAL VARIABLES
 
                     $folder   = $_SERVER['DOCUMENT_ROOT'] . '/backup/locale';
@@ -137,6 +142,7 @@
                     bindtextdomain($domain, $folder);
                     bind_textdomain_codeset($domain, $encoding);
                     textdomain($domain);
+
             }
 
         /********************************************************************************
@@ -144,8 +150,8 @@
          * @return void
          ********************************************************************************/
 
-            private function setOpenGraph(): void
-            {
+            private function setOpenGraph(): void {
+
                 /* EXAMPLE OF BASIC OPEN GRAPH
 
                     $this->openGraph =
@@ -157,6 +163,7 @@
                         'description' => 'A lightweight PHP framework for developers who love SQL.'
                     ];
                 */
+
             }
 
         /********************************************************************************
@@ -165,10 +172,10 @@
          * @return void
          ********************************************************************************/
 
-            protected function setPageTitle(string $pageTitle): void
-            {
+            protected function setPageTitle(string $pageTitle): void {
                 if (is_string($pageTitle)) {$this->openGraph['title'] = $pageTitle;}
             }
+
     }
 
 ?>
