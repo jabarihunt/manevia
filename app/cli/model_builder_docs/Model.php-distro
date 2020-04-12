@@ -23,7 +23,7 @@
             //
             // - protected static function beforeCreate(Array $data) {return $data;}
             // - protected function afterCreate() {}
-            // - protected static function beforeGet($id) {return $id;}
+            // - protected static function beforeGet($idOrData) {return $idOrdata;}
             // - protected function afterGet() {}
             // - protected function beforeUpdate(Array $data) {return $data;}
             // - protected function afterUpdate() {}
