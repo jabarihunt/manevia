@@ -157,7 +157,7 @@
 
                 protected static function beforeCreate(array $data): array {return $data;}
                 protected function afterCreate() {}
-                protected static function beforeGet($id): int {return $id;}
+                protected static function beforeGet($idOrData) {return $idOrData;}
                 protected function afterGet() {}
                 protected function beforeUpdate(array $data): array {return $data;}
                 protected function afterUpdate() {}

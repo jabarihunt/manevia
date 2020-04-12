@@ -213,10 +213,10 @@
                 /********************************************************************************
                  * PREPARE METHOD
                  * @param string $query
-                 * @return mysqli_stmt
+                 * @return mixed
                  ********************************************************************************/
 
-                    final public static function prepare(string $query): mysqli_stmt {
+                    final public static function prepare(string $query) {
                         return self::get()->prepare($query);
                     }
 
