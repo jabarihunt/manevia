@@ -1,11 +1,16 @@
 <?php
 
     /********************************************************************************
-     * DEFAULT AND APPROVED PAGES (default MUST be on first level of approved pages array!)
+     * DEFAULT AND VALID ENDPOINTS (default MUST be on first level of approved endpoints array!)
      ********************************************************************************/
 
-        $defaultPage   = 'home';
-        $approvedPages = ['error', 'home'];
+        const ENDPOINTS = [
+            'default' => 'home',
+            'valid'   => [
+                'error',
+                'home'
+            ]
+        ];
 
     /********************************************************************************
      * COMPOSER AUTO LOAD -> LOAD REQUIRED CLASSES
@@ -42,54 +47,54 @@
         }
 
     /********************************************************************************
-     * ROUTING -> EXTRACT REQUESTED PAGE AND PASSED VARIABLES FROM THE URL
+     * ROUTING -> EXTRACT REQUESTED ENDPOINT AND PASSED VARIABLES FROM THE URL
      ********************************************************************************/
 
-        // INSTANTIATE VARIABLES -> PAGE | PAGE HOLDER | ARRAY HOLDER VALUES ARRAY
+        // INSTANTIATE VARIABLES -> ENDPOINT | ENDPOINT HOLDER | ARRAY HOLDER VALUES ARRAY
 
-            $page          = '';
-            $pageIsArray   = NULL;
-            $arrayHolder   = $approvedPages;
-            $values        = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+            $endpoint        = '';
+            $endpointIsArray = NULL;
+            $arrayHolder     = ENDPOINTS['valid'];
+            $values          = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
 
-        //  BUILD PAGE NAME
+        //  BUILD ENDPOINT NAME
 
             if (!empty($values[0])) {
 
                 do {
 
-                    // GET EXTRACTED PAGE > SEE IF IT EXISTS IN APPROVED PAGES ARRAY AS A STRING OR ARRAY
+                    // GET EXTRACTED ENDPOINT > SEE IF IT EXISTS IN VALID ENDPOINTS ARRAY AS A STRING OR ARRAY
 
-                        $extractedPage = strtolower(array_shift($values));
-                        $pageIsArray   = key_exists($extractedPage, $arrayHolder);
+                        $extractedEndpoint = strtolower(array_shift($values));
+                        $endpointIsArray   = key_exists($extractedEndpoint, $arrayHolder);
 
-                        if (in_array($extractedPage, $arrayHolder) || $pageIsArray) {
+                        if (in_array($extractedEndpoint, $arrayHolder) || $endpointIsArray) {
 
-                            // GET PAGE NAME | IF EXTRACTED PAGE IS AN ARRAY, UPDATE ARRAY HOLDER
+                            // GET ENDPOINT NAME | IF EXTRACTED ENDPOINT IS AN ARRAY, UPDATE ARRAY HOLDER
 
-                                if (empty($page)) {
-                                    $page .= Utilities::slugToCamel($extractedPage);
+                                if (empty($endpoint)) {
+                                    $endpoint .= Utilities::slugToCamel($extractedEndpoint);
                                 } else {
-                                    $page .= Utilities::slugToCamel($extractedPage, TRUE);
+                                    $endpoint .= Utilities::slugToCamel($extractedEndpoint, TRUE);
                                 }
 
-                                if (!empty($arrayHolder[$extractedPage]) && is_array($arrayHolder[$extractedPage])) {
-                                    $arrayHolder = $arrayHolder[$extractedPage];
+                                if (!empty($arrayHolder[$extractedEndpoint]) && is_array($arrayHolder[$extractedEndpoint])) {
+                                    $arrayHolder = $arrayHolder[$extractedEndpoint];
                                 }
 
                         } else {
-                            array_unshift($values, $extractedPage);
+                            array_unshift($values, $extractedEndpoint);
                         }
 
-                } while ($pageIsArray);
+                } while ($endpointIsArray);
 
             } else {
-                $page = $defaultPage;
+                $endpoint = ENDPOINTS['default'];
             }
 
-        // IF NO VALID PAGE EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
+        // IF NO VALID ENDPOINT EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
 
-            if (empty($page)) {
+            if (empty($endpoint)) {
 
                 header('Location: /error/404');
                 exit;
@@ -104,7 +109,7 @@
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
      ********************************************************************************/
 
-        $controller = ucfirst($page) . 'Controller';
+        $controller = ucfirst($endpoint) . 'Controller';
         require("controllers/{$controller}.php");
         new $controller($values);
 
@@ -115,4 +120,5 @@
         if ($useSessions) {
             session_write_close();
         }
+
 ?>
