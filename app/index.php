@@ -11,11 +11,17 @@
      * CONFIGURE AND START SESSIONS
      ********************************************************************************/
 
-        ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
-        ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
-        ini_set('session.gc_probability', 1);
+        $useSessions = (bool) getenv('SESSION_ENABLED');
 
-        session_start();
+        if ($useSessions) {
+
+            ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
+            ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
+            ini_set('session.gc_probability', 1);
+
+            session_start();
+
+        }
 
     /********************************************************************************
      * DISPLAY ERRORS IN DEVELOPMENT ENVIRONMENT
@@ -106,5 +112,7 @@
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
      ********************************************************************************/
 
-        session_write_close();
+        if ($useSessions) {
+            session_write_close();
+        }
 ?>
