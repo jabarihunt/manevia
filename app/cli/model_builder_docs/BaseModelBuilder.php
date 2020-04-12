@@ -7,16 +7,16 @@
      * START SESSIONS
      ********************************************************************************/
 
-		require(__DIR__ . '/../../vendor/autoload.php');
+        require(__DIR__ . '/../../vendor/autoload.php');
 
-		$dotenv = new Dotenv(__DIR__ . '/../../');
-		$dotenv->load();
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../');
+        $dotenv->load();
 
-		DB::initialize(FALSE);
+        DB::initialize();
 
     /********************************************************************************
      * PHP CLI BASE MODEL BUILDER
-     * PHP version 7.1
+     * PHP version 7.1+
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
@@ -80,10 +80,9 @@
 
                 public function __construct() {
 
-                    // INITIALIZE DATABASE | GET BASE MODEL | GET TABLE DATA
+                    // GET BASE MODEL | GET TABLE DATA
 
                         $this->prompt("\nStarting Base Model Builder...\n", FALSE);
-                        DB::initialize(FALSE);
 
                         $this->baseModel = file_get_contents(__DIR__ . '/BaseModel.php-distro');
 
@@ -110,13 +109,7 @@
                             // CREATE MODEL DATA | PROMPT USER | RESET REPLACE ARRAY
 
                                 $tableBuilt = $this->buildBaseModel($tableName);
-
-                                if ($tableBuilt) {
-                                    $this->prompt("COMPLETE: {$tableName}");
-                                } else {
-                                    $this->prompt("ERROR: {$tableName}");
-                                }
-
+                                $tableBuilt ? $this->prompt("COMPLETE: {$tableName}") : $this->prompt("ERROR: {$tableName}");
                                 $this->resetReplaceArray();
 
                         }

@@ -4,12 +4,13 @@
     "classmap-authoritative": true
   },
   "require": {
+    "ext-json": "*",
     "monolog/monolog": "*",
     "mustache/mustache": "*",
     "phpmailer/phpmailer": "*",
     "robmorgan/phinx": "*",
     "jabarihunt/json-web-token": "^1.0",
-    "ext-json": "*"
+    "vlucas/phpdotenv": "^4.1"
   },
   "require-dev": {
     "phpunit/phpunit": "*"

@@ -11,7 +11,7 @@
      * Class that handles database connections, queries, and backups as well as
      * access and storage of session MySQL.
      *
-     * PHP version 5.6+
+     * PHP version 7.1+
      *
      ********************************************************************************
      * REQUIRED DB TABLE FOR MYSQL SESSIONS
@@ -101,7 +101,7 @@
 
                 final private static function get(): mysqli {
 
-                    if(self::$instance === NULL) {self::$instance = new DB();}
+                    if (self::$instance === NULL) {self::$instance = new DB();}
                     return self::$db;
 
                 }

@@ -41,10 +41,10 @@
             /********************************************************************************
              * PLURAL TO SINGULAR
              * @param string $word Word to be made singular
-             * @return bool
+             * @return string
              ********************************************************************************/
 
-                public static function pluralToSingular(string $word): bool {
+                public static function pluralToSingular(string $word): string {
 
                     if (strlen($word) > 0) {
 
@@ -148,45 +148,6 @@
 
                 public static function swapMultipleSpacesForOne(string $string): string {
                     return strlen($string) >= 2 ? preg_replace('!\s+!', ' ', $string) : $string;
-                }
-
-            /********************************************************************************
-             * VALIDATE EMAIL METHOD
-             * @param string $email
-             * @return bool
-             ********************************************************************************/
-
-                public static function validateEmail(string $email): bool {
-
-                    // SET INITIAL RETURN VARIABLE
-
-                        $emailIsValid = FALSE;
-
-                    // MAKE SURE AN EMPTY STRING WASN'T PASSED
-
-                        if (!empty($email)) {
-
-                            // GET EMAIL PARTS
-
-                                $domain = ltrim(stristr($email, '@'), '@');
-                                $user   = stristr($email, '@', TRUE);
-
-                            // VALIDATE EMAIL ADDRESS
-
-                                if (
-                                    !empty($user) &&
-                                    !empty($domain) &&
-                                    checkdnsrr($domain)
-                                ) {
-                                    $emailIsValid = TRUE;
-                                }
-
-                        }
-
-                    // RETURN RESULT
-
-                        return $emailIsValid;
-
                 }
 
             /********************************************************************************

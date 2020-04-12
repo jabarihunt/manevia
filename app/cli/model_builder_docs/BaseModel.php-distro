@@ -2,7 +2,7 @@
 
     /********************************************************************************
      * [MODEL_NAME_UPPERCASE] BASE MODEL
-     * PHP version 5.6+
+     * PHP version 7.1+
      * Auto Generated via ../cli/model_builder_docs/BaseModelBuilder.php
      ********************************************************************************/
 
