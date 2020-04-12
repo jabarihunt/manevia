@@ -13,7 +13,7 @@
              * @param array $data
              ********************************************************************************/
 
-                protected function __construct(Array $data) {
+                protected function __construct(array $data) {
                     parent::__construct($data);
                 }
 
