@@ -1,14 +1,25 @@
 <?php
 
-    use Manevia\DB;
-    use Manevia\Utilities;
+    /********************************************************************************
+     * DEFAULT AND APPROVED PAGES (default MUST be on first level of approved pages array!)
+     ********************************************************************************/
+
+        $defaultPage   = 'home';
+        $approvedPages = ['error', 'home'];
 
     /********************************************************************************
-     * SET CACHE IN INI | SET ERRORS TO TRUE FOR DEVELOPMENT ENVIRONMENTS
+     * CONFIGURE AND START SESSIONS
      ********************************************************************************/
 
         ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
         ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
+        ini_set('session.gc_probability', 1);
+
+        session_start();
+
+    /********************************************************************************
+     * DISPLAY ERRORS IN DEVELOPMENT ENVIRONMENT
+     ********************************************************************************/
 
         if (getenv('ENVIRONMENT') === 'development') {
 
@@ -18,18 +29,11 @@
         }
 
     /********************************************************************************
-     * DEFAULT AND APPROVED PAGES (default MUST be on first level of approved pages array!)
-     ********************************************************************************/
-
-        $defaultPage   = 'home';
-        $approvedPages = ['error', 'home'];
-
-    /********************************************************************************
-     * COMPOSER AUTO LOAD | INSTANTIATE REQUIRED LIBRARIES -> DB
+     * COMPOSER AUTO LOAD -> LOAD REQUIRED CLASSES
      ********************************************************************************/
 
         require('vendor/autoload.php');
-        DB::initialize();
+        use Manevia\Utilities;
 
     /********************************************************************************
      * ROUTING -> EXTRACT REQUESTED PAGE AND PASSED VARIABLES FROM THE URL
@@ -98,4 +102,9 @@
         require("controllers/{$controller}.php");
         new $controller($values);
 
+    /********************************************************************************
+     * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
+     ********************************************************************************/
+
+        session_write_close();
 ?>
