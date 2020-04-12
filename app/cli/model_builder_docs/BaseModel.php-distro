@@ -91,7 +91,7 @@
 
                                 if ($statement->affected_rows == 1) {
 
-                                    $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = [MODEL_NAME]::get($statement->insert_id);
+                                    $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = new [MODEL_NAME]($data);
                                     call_user_func([$[MODEL_NAME_FIRST_LETTER_LOWERCASE], 'afterCreate']);
 
                                 }
@@ -108,16 +108,16 @@
 
             /********************************************************************************
              * GET METHOD
-             * @param integer $idOrData
-             * @return [MODEL_NAME]
+             * @param mixed $idOrData
+             * @return array
              ********************************************************************************/
 
-                public static function get($idOrData): [MODEL_NAME] {
+                public static function get($idOrData): array {
 
                     // RUN BEFORE GET CALLBACK | SET INITIAL VARIABLES
 
                         $idOrData = call_user_func('static::beforeGet', $idOrData);
-                        $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = NULL;
+                        $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = [];
 
                     // MAKE SURE PASSED VALUE ISN'T EMPTY |  | QUERY DATABASE FOR MODEL DATA AND CREATE MODEL | RUN AFTER CREATE CALLBACK
 
@@ -134,7 +134,7 @@
                                         if ($result instanceof \mysqli_result && $result->num_rows == 1) {
 
                                             $data = $result->fetch_assoc();
-                                            $[MODEL_NAME_FIRST_LETTER_LOWERCASE] = [new [MODEL_NAME]($data)];
+                                            $[MODEL_NAME_FIRST_LETTER_LOWERCASE][0] = new [MODEL_NAME]($data);
                                             call_user_func([$[MODEL_NAME_FIRST_LETTER_LOWERCASE][0], 'afterGet']);
 
                                         }
