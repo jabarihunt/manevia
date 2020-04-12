@@ -3,8 +3,8 @@
     use Manevia\Controller;
 
     /********************************************************************************
-     * HOME CONTROLLER
-     * PHP version 5.6+
+     * ERROR CONTROLLER
+     * PHP version 7.1+
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
@@ -70,7 +70,7 @@
              * @param array $values
              ********************************************************************************/
 
-                public function __construct(Array $values) {
+                public function __construct(array $values) {
 
                     parent::__construct();
 
