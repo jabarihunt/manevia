@@ -23,9 +23,9 @@
      * CONFIGURE AND START SESSIONS
      ********************************************************************************/
 
-        $useSessions = (bool) getenv('SESSION_ENABLED');
+        $sessionsEnabled = (bool) getenv('SESSION_ENABLED');
 
-        if ($useSessions) {
+        if ($sessionsEnabled) {
 
             ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
             ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
@@ -92,16 +92,14 @@
                 $endpoint = ENDPOINTS['default'];
             }
 
-        // IF NO VALID ENDPOINT EXISTS, REDIRECT WITH ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
+        // IF NO VALID ENDPOINT EXISTS, LOAD 404 ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
 
             if (empty($endpoint)) {
 
-                header('Location: /error/404');
-                exit;
+                $endpoint = 'error';
+                $values   = ['404'];
 
-            }
-
-            if (!is_array($values)) {
+            } else if (!is_array($values)) {
                 $values = [];
             }
 
@@ -117,7 +115,7 @@
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
      ********************************************************************************/
 
-        if ($useSessions) {
+        if ($sessionsEnabled) {
             session_write_close();
         }
 
