@@ -29,9 +29,9 @@
 
                         // SET -> LOCALE | INTERNATIONALIZATION | MUSTACHE AUTOLOADER
 
+                            $this->setOpenGraph();
                             $this->setLocale();
                             $this->setI18n();
-                            $this->setOpenGraph();
 
                     }
 
@@ -126,16 +126,16 @@
                     $folder   = $_SERVER['DOCUMENT_ROOT'] . '/backup/locale';
                     $domain   = 'messages';
                     $encoding = 'UTF-8';
+                    $locale   = 'en_US';
 
-                // GET OR SET LOCALE
+                // SET OPEN GRAPH LOCALE
 
-                    $locale  = 'en_US';
-                    $locale .= ".{$encoding}";
+                    $this->openGraph['locale'] = $locale;
 
                 // SET I18N ENVIRONMENT VARIABLES
 
-                    putenv('LC_ALL=' . $locale);
-                    setlocale(LC_ALL, $locale);
+                    putenv("LC_ALL={$locale}.{$encoding}");
+                    setlocale(LC_ALL, "{$locale}.{$encoding}");
 
                 // RUN GETTEXT DOMAIN METHODS
 
@@ -152,17 +152,23 @@
 
             private function setOpenGraph(): void {
 
-                /* EXAMPLE OF BASIC OPEN GRAPH
+                    $this->openGraph = [
 
-                    $this->openGraph =
-                    [
-                        'type'        => 'website',
-                        'title'       => 'Manevia Framework',
-                        'url'         => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-                        'image'       => 'https://' . $_SERVER['HTTP_HOST'] . '/images/logo.png', // TODO: Manevia Logo?
-                        'description' => 'A lightweight PHP framework for developers who love SQL.'
+                        // GENERAL
+
+                            'type'        => 'website',
+                            'title'       => 'Manevia Framework',
+                            'url'         => "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}",
+                            'image'       => "https://{$_SERVER['HTTP_HOST']}{/images/logo.png", // TODO: Manevia Logo?
+                            'description' => 'A lightweight PHP framework for developers who love SQL.',
+
+                        // TWITTER
+
+                            'twitterCard' => 'summary_large_image',
+                            'twitterSite' => '@Manevia',
+                            'twitterCreator' => '@Manevia'
+
                     ];
-                */
 
             }
 
@@ -173,7 +179,11 @@
          ********************************************************************************/
 
             protected function setPageTitle(string $pageTitle): void {
-                if (is_string($pageTitle)) {$this->openGraph['title'] = $pageTitle;}
+
+                if (strlen($pageTitle) > 0) {
+                    $this->openGraph['title'] .= " | {$pageTitle}";
+                }
+
             }
 
     }
