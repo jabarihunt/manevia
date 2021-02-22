@@ -33,7 +33,7 @@
 
         } else {
 
-            $version  = 'v' . getenv('DEFAULT_VERSION');
+            $version  = 'v' . getenv('DEFAULT_API_VERSION');
             $endpoint = 'error';
             $uriValues   = ['400'];
 
@@ -47,7 +47,7 @@
 
         if (!@include("controllers/{$version}/{$controller}.php")) {
 
-            $version    = 'v' . getenv('DEFAULT_VERSION');
+            $version    = 'v' . getenv('DEFAULT_API_VERSION');
             $controller = 'ErrorController';
             $uriValues  = ['400'];
 
