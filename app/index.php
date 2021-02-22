@@ -1,43 +1,11 @@
 <?php
 
     /********************************************************************************
-     * DEFAULT AND VALID ENDPOINTS (default MUST be on first level of approved endpoints array!)
-     ********************************************************************************/
-
-        const ENDPOINTS = [
-            'default' => 'home',
-            'valid'   => [
-                'error',
-                'home'
-            ]
-        ];
-
-    /********************************************************************************
      * COMPOSER AUTO LOAD -> LOAD REQUIRED CLASSES
+     * DISPLAY ERRORS IN DEV ENVIRONMENT
      ********************************************************************************/
 
         require('vendor/autoload.php');
-        use Manevia\Utilities;
-
-    /********************************************************************************
-     * CONFIGURE AND START SESSIONS
-     ********************************************************************************/
-
-        $sessionsEnabled = (bool) getenv('SESSION_ENABLED');
-
-        if ($sessionsEnabled) {
-
-            ini_set('session.save_handler', getenv('SESSION_SAVE_HANDLER'));
-            ini_set('session.save_path', getenv('SESSION_SAVE_PATH'));
-            ini_set('session.gc_probability', 1);
-
-            session_start();
-
-        }
-
-    /********************************************************************************
-     * DISPLAY ERRORS IN DEVELOPMENT ENVIRONMENT
-     ********************************************************************************/
 
         if (getenv('ENVIRONMENT') === 'development') {
 
@@ -47,76 +15,46 @@
         }
 
     /********************************************************************************
-     * ROUTING -> EXTRACT REQUESTED ENDPOINT AND PASSED VARIABLES FROM THE URL
+     * ROUTING -> EXTRACT REQUESTED VERSION, ENDPOINT, AND PASSED VALUES FROM THE URI
      ********************************************************************************/
 
-        // INSTANTIATE VARIABLES -> ENDPOINT | ENDPOINT HOLDER | ARRAY HOLDER VALUES ARRAY
+        $uriValues = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
 
-            $endpoint        = '';
-            $endpointIsArray = NULL;
-            $arrayHolder     = ENDPOINTS['valid'];
-            $values          = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+        if (
+            !empty($uriValues[0]) &&
+            !empty($uriValues[1]) &&
+            $uriValues[0][0] === 'v' &&
+            is_numeric(ltrim($uriValues[0], 'v'))
 
-        //  BUILD ENDPOINT NAME
+        ) {
 
-            if (!empty($values[0])) {
+            $version  = array_shift($uriValues);
+            $endpoint = array_shift($uriValues);
 
-                do {
+        } else {
 
-                    // GET EXTRACTED ENDPOINT > SEE IF IT EXISTS IN VALID ENDPOINTS ARRAY AS A STRING OR ARRAY
+            $version  = 'v' . getenv('DEFAULT_VERSION');
+            $endpoint = 'error';
+            $uriValues   = ['400'];
 
-                        $extractedEndpoint = strtolower(array_shift($values));
-                        $endpointIsArray   = key_exists($extractedEndpoint, $arrayHolder);
-
-                        if (in_array($extractedEndpoint, $arrayHolder) || $endpointIsArray) {
-
-                            // GET ENDPOINT NAME | IF EXTRACTED ENDPOINT IS AN ARRAY, UPDATE ARRAY HOLDER
-
-                                if (empty($endpoint)) {
-                                    $endpoint .= Utilities::slugToCamel($extractedEndpoint);
-                                } else {
-                                    $endpoint .= Utilities::slugToCamel($extractedEndpoint, TRUE);
-                                }
-
-                                if (!empty($arrayHolder[$extractedEndpoint]) && is_array($arrayHolder[$extractedEndpoint])) {
-                                    $arrayHolder = $arrayHolder[$extractedEndpoint];
-                                }
-
-                        } else {
-                            array_unshift($values, $extractedEndpoint);
-                        }
-
-                } while ($endpointIsArray);
-
-            } else {
-                $endpoint = ENDPOINTS['default'];
-            }
-
-        // IF NO VALID ENDPOINT EXISTS, LOAD 404 ERROR | IF NO VALUES WERE PASSED, MAKE SURE IT'S AN EMPTY ARRAY
-
-            if (empty($endpoint)) {
-
-                $endpoint = 'error';
-                $values   = ['404'];
-
-            } else if (!is_array($values)) {
-                $values = [];
-            }
+        }
 
     /********************************************************************************
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
      ********************************************************************************/
 
         $controller = ucfirst($endpoint) . 'Controller';
-        require("controllers/{$controller}.php");
-        new $controller($values);
 
-    /********************************************************************************
-     * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
-     ********************************************************************************/
+        if (!@include("controllers/{$version}/{$controller}.php")) {
 
-        if ($sessionsEnabled) {
-            session_write_close();
+            $version    = 'v' . getenv('DEFAULT_VERSION');
+            $controller = 'ErrorController';
+            $uriValues  = ['400'];
+
+            include("controllers/{$version}/{$controller}.php");
+
         }
+
+        new $controller($uriValues);
 
 ?>

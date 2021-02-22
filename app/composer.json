@@ -6,11 +6,7 @@
   "require": {
     "ext-json": "*",
     "monolog/monolog": "*",
-    "mustache/mustache": "*",
-    "phpmailer/phpmailer": "*",
-    "robmorgan/phinx": "*",
-    "jabarihunt/json-web-token": "^1.0",
-    "vlucas/phpdotenv": "^4.1"
+    "jabarihunt/json-web-token": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
@@ -19,7 +15,6 @@
     "psr-4": {
       "Manevia\\": [
         "controllers/",
-        "controllers/base/",
         "core/",
         "models/",
         "models/base/"

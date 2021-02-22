@@ -7,9 +7,9 @@
 # docker rm $(docker ps -a -q)
 #############################################################################################
 
-# Use the official PHP 7.4 image.
+# Use the official PHP 8 image.
 # https://hub.docker.com/_/php
-FROM php:7.4-apache
+FROM php:8.0-apache
 
 # Install and setup crons
 # Install PHP extensions & Apache Modules
@@ -35,5 +35,4 @@ COPY app/. /var/www/html/
 RUN cp /var/www/html/cli/build_docs/000-default.conf /etc/apache2/sites-available/000-default.conf && \
 	sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
 	ln -s /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf && \
-	mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
-	chmod 777 /var/www/html/cache/mustache
+	mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
