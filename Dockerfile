@@ -16,8 +16,8 @@ FROM php:8.0-apache
 # Remove old Apache configuration
 RUN docker-php-ext-install mysqli && \
 	docker-php-ext-install gettext && \
-    pecl install redis && \
-    docker-php-ext-enable redis && \
+    # pecl install redis && \
+    # docker-php-ext-enable redis && \
 	service apache2 stop && \
     a2enmod rewrite && \
     a2enmod expires && \
