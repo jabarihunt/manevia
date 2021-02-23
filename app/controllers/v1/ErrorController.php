@@ -62,8 +62,8 @@
                     '599' => 'Network Connect Timeout Error'
 				];
 
-                public $errorCode;
-                public $errorMessage;
+                public string $errorCode;
+                public string $errorMessage;
 
             /********************************************************************************
              * CONSTRUCT METHOD
@@ -72,18 +72,17 @@
 
                 public function __construct(array $values) {
 
-                    parent::__construct();
+                    parent::__construct(false);
 
                     // MAKE SURE A VALID ERROR CODE WAS PASSED. IF NOT, REDIRECT TO 404
 
                         if (!empty($values) && array_key_exists($values[0], self::ERRORS)) {
                             $this->errorCode = $values[0];
-                        }
-                        else {
+                        } else {
 
                             header("HTTP/1.1 404 Not Found");
-                            header('Location: /error/404');
-                            exit;
+                            $this->errorCode    = 404;
+                            $this->errorMessage = self::ERRORS['404'];
 
                         }
 
@@ -91,8 +90,7 @@
 
                         $this->errorMessage = self::ERRORS[$this->errorCode];
                         header("HTTP/1.1 {$this->errorCode} {$this->errorMessage}");
-                        $this->setPageTitle("{$this->errorCode} - {$this->errorMessage}");
-                        $this->loadTemplate('error');
+                        $this->setResponse([], $this->errorCode, $this->errorMessage);
 
                 }
 

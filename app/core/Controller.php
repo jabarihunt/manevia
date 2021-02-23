@@ -1,188 +1,159 @@
 <?php namespace Manevia;
 
-    use Mustache_Engine;
-    use Mustache_Loader_FilesystemLoader;
-
     class Controller {
 
         /********************************************************************************
          * CLASS VARIABLES
-         * @var array $i18n Internationalization array
-         * @var array $openGraph Open Graph array
+         * @var string $requestMethod
+         * @var string $response
          ********************************************************************************/
 
-            public $i18n;
-            public $openGraph;
+            protected string $requestMethod;
+            protected string $response;
 
         /********************************************************************************
          * CONSTRUCT METHOD
          * @param bool $authorizationRequired
+         * @param bool $useCors
          ********************************************************************************/
 
-            public function __construct(bool $authorizationRequired = FALSE) {
+            public function __construct(bool $authorizationRequired, bool $useCors = TRUE) {
 
-                // CHECK IF REQUEST REQUIRED AUTHORIZATION -> RESPOND ACCORDINGLY
+                if (!$authorizationRequired || $this->requestIsAuthorized()) {
 
-                    if ($authorizationRequired && !$this->requestIsAuthorized()) {
-                        // DO AUTHORIZATION
-                    } else {
+                    // SET REQUEST METHOD | SET CONTENT TYPE HEADER
 
-                        // SET -> LOCALE | INTERNATIONALIZATION | MUSTACHE AUTOLOADER
+                        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
+                        header('Content-Type: application/json');
 
-                            $this->setOpenGraph();
-                            $this->setLocale();
-                            $this->setI18n();
+                    // SET CORS HEADERS
 
+                        if ($useCors) {
+
+                            header('Access-Control-Allow-Origin: *');
+
+                            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+
+                                header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+                                header('Access-Control-Max-Age: 604800');
+                                header('Access-Control-Allow-Headers: Authorization');
+
+                            }
+
+                        }
+                } else {
+
+                    // SEND UNAUTHORIZED
+
+                        $this->setResponse(['authorized' => false], 401);
+
+                }
+            }
+
+        /********************************************************************************
+         * DESTRUCT METHOD
+         ********************************************************************************/
+
+            public function __destruct() {
+
+                // HANDLE EMPTY RESPONSE
+
+                    if (empty($this->response)) {
+                        $this->setResponse(NULL, 500, 'Internal Server Error');
                     }
 
+                    echo $this->response;
+
             }
 
         /********************************************************************************
-         * LOAD TEMPLATE METHOD
-         * @param string $template
-         * @param array $templateValues
-         * @return void
-         ********************************************************************************/
-
-            protected function loadTemplate(string $template, array $templateValues = NULL): void {
-
-                $mustache = new Mustache_Engine
-                ([
-                    'loader'           => new Mustache_Loader_FilesystemLoader('views'),
-                    'partials_loader'  => new Mustache_Loader_FilesystemLoader('views/partials'),
-                    'cache'            => 'cache/mustache',
-                    'strict_callables' => true
-                ]);
-
-                if ($templateValues === NULL) {
-                    $templateValues = $this;
-                }
-
-                echo $mustache->render("{$template}.mustache", $templateValues);
-            }
-
-        /********************************************************************************
-         * CHECK AUTHORIZATION METHOD
+         * REQUEST IS AUTHORIZED METHOD
          * @return bool
          ********************************************************************************/
 
             private function requestIsAuthorized(): bool {
 
-                // DO CHECK AUTHORIZATION
-                return TRUE;
-
-            }
-
-        /********************************************************************************
-         * SET GLOBAL INTERNATIONALIZATION METHOD
-         * @return void
-         ********************************************************************************/
-
-            private function setI18n(): void {
-
-                /* GETTEXT EXAMPLE
-
-                    $localeDetails = localeconv();
-
-                    $this->i18n['Home']          = _('Home');
-                    $this->i18n['Sorry']         = _('Sorry');
-
-                    if ($localeDetails['p_cs_precedes'])
-                    {
-                        $this->i18n['CurrencySymbolPrefix'] = trim($localeDetails['currency_symbol']);
-                        $this->i18n['CurrencySymbolSuffix'] = NULL;
-                    }
-                    else
-                    {
-                        $this->i18n['CurrencySymbolPrefix'] = NULL;
-                        $this->i18n['CurrencySymbolSuffix'] = trim($localeDetails['currency_symbol']);
-                    }
-
-                    if (empty($this->user))
-                    {
-                        $this->i18n['FormEmailUsername']         = _('Username Or Email');
-                        $this->i18n['FormEmailUsernameRequired'] = _('Username or Email is required!');
-                        $this->i18n['FormForgotPassword']        = _('forgot password');
-                        $this->i18n['FormLetMeIn']               = _('Let Me In!');
-                        $this->i18n['FormPasswordAgainRequired'] = _('Passwords Must Match');
-                        $this->i18n['FormPaypalEmail']           = _('PayPal Email');
-                        $this->i18n['FormPaypalEmailRequired']   = _('PayPal Email is required!');
-                        $this->i18n['FormUsernameRequired']      = _('Username is Required!');
-                        $this->i18n['FormWhyPaypal']             = _('Why do you need my PayPal email?');
-                    }
-                */
-
-            }
-
-        /********************************************************************************
-         * SET LOCALE METHOD
-         * @return void
-         ********************************************************************************/
-
-            private function setLocale(): void {
-
                 // SET INITIAL VARIABLES
 
-                    $folder   = $_SERVER['DOCUMENT_ROOT'] . '/backup/locale';
-                    $domain   = 'messages';
-                    $encoding = 'UTF-8';
-                    $locale   = 'en_US';
+                    $isAuthorized = FALSE;
+                    $headers      = apache_request_headers();
 
-                // SET OPEN GRAPH LOCALE
+                // CHECK AUTHORIZATION
 
-                    $this->openGraph['locale'] = $locale;
+                    if (!empty($headers['Authorization'])) {
+                        /* DO REQUEST AUTHORIZATION HERE */
+                    }
 
-                // SET I18N ENVIRONMENT VARIABLES
+                // RETURN RESULT
 
-                    putenv("LC_ALL={$locale}.{$encoding}");
-                    setlocale(LC_ALL, "{$locale}.{$encoding}");
-
-                // RUN GETTEXT DOMAIN METHODS
-
-                    bindtextdomain($domain, $folder);
-                    bind_textdomain_codeset($domain, $encoding);
-                    textdomain($domain);
+                    return $isAuthorized;
 
             }
 
         /********************************************************************************
-         * SET OPEN GRAPH METHOD
-         * @return void
+         * GET JSON DATA METHOD
+         * @return array|null
          ********************************************************************************/
 
-            private function setOpenGraph(): void {
+            protected function getJSONData(): array|null {
 
-                    $this->openGraph = [
-
-                        // GENERAL
-
-                            'type'        => 'website',
-                            'title'       => 'Manevia Framework',
-                            'url'         => "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}",
-                            'image'       => "https://{$_SERVER['HTTP_HOST']}{/images/logo.png", // TODO: Manevia Logo?
-                            'description' => 'A lightweight PHP framework for developers who love SQL.',
-
-                        // TWITTER
-
-                            'twitterCard' => 'summary_large_image',
-                            'twitterSite' => '@Manevia',
-                            'twitterCreator' => '@Manevia'
-
-                    ];
+                $data = file_get_contents("php://input");
+                return !empty($data) ? json_decode($data, TRUE) : NULL;
 
             }
 
         /********************************************************************************
-         * SET PAGE TITLE METHOD
-         * @param string $pageTitle
+         * SET RESPONSE MESSAGE METHOD
+         * BASED ON JSEND: https://github.com/omniti-labs/jsend
+         * @param array $data
+         * @param int $htmlCode
+         * @param string|null $errorMessage
          * @return void
          ********************************************************************************/
 
-            protected function setPageTitle(string $pageTitle): void {
+            protected function setResponse(array $data = [], int $htmlCode = 200, string $errorMessage = NULL): void {
 
-                if (strlen($pageTitle) > 0) {
-                    $this->openGraph['title'] .= " | {$pageTitle}";
-                }
+                // BUILD RESPONSE
+
+                    $response = [];
+
+                    if ($htmlCode === 200 && !empty($data)) {
+
+                        header("HTTP/1.1 200 OK");
+
+                        $response = [
+                            'status' => 'success',
+                            'data'   => $data
+                        ];
+
+                    } else {
+
+                        header("HTTP/1.1 {$htmlCode} {$errorMessage}");
+                        $response['status'] = ($htmlCode >= 500) ? 'error' : 'fail';
+
+                        if ($response['status'] === 'error') {
+
+                            $response['code']    = $htmlCode;
+                            $response['message'] = $errorMessage;
+
+                        } else {
+
+                            if (empty($data)) {
+
+                                $response['data'] = [
+                                    'code' => $htmlCode,
+                                    'message' => $errorMessage
+                                ];
+
+                            }
+
+                        }
+
+                    }
+
+                // SET CLASS RESPONSE VARIABLE AS JSON STRING
+
+                    $this->response = json_encode($response);
 
             }
 

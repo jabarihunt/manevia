@@ -15,7 +15,7 @@
              * @var string $helloWorldMessage
              ********************************************************************************/
 
-                public $helloWorldMessage;
+                private string $helloWorldMessage;
 
             /********************************************************************************
              * CONSTRUCT METHOD
@@ -26,7 +26,7 @@
 
                     parent::__construct();
                     $this->helloWorldMessage = 'Hello World, I am Manevia!';
-                    $this->loadTemplate('home');
+                    $this->setResponse(['message' => $this->helloWorldMessage]);
 
                 }
 
