@@ -43,28 +43,19 @@
         final class DB {
 
             /********************************************************************************
-             * CONNECTION AND SESSION VARIABLES
+             * CONNECTION VARIABLES
              * @var string $host Database Server
              * @var string $database Database Instance
              * @var string $user Database Username
              * @var string $password Database Password
              * @var string $socket Database Socket
-             * @var boolean $useDBSessions Value designating if sessions should be used
-             * @var int $expires Session Expiration Time
              ********************************************************************************/
 
-                // DATABASE CONNECTION VARIABLES
-
-                    private static $host;
-                    private static $database;
-                    private static $user;
-                    private static $password;
-                    private static $socket;
-
-                // SESSION VARIABLES
-
-                    private static $useDBSessions;
-                    private static $sessionExpires;
+                private static string|null $host;
+                private static string $database;
+                private static string $user;
+                private static string $password;
+                private static string|null $socket;
 
             /********************************************************************************
              * CLASS VARIABLES
@@ -72,8 +63,8 @@
              * @var object $instance Singleton instance of this class
              ********************************************************************************/
 
-                private static $db;
-                private static $instance = NULL;
+                private static mysqli $db;
+                private static DB|null $instance = NULL;
 
             /********************************************************************************
              * CLASS CONSTANTS
@@ -96,10 +87,10 @@
 
             /********************************************************************************
              * SINGLETON INSTANCE METHOD
-             * @return mysqli
+             * @return mysqli|null
              ********************************************************************************/
 
-                final private static function get(): mysqli {
+                final private static function get(): mysqli|null {
 
                     if (self::$instance === NULL) {self::$instance = new DB();}
                     return self::$db;
@@ -118,11 +109,8 @@
                         self::$database       = getenv('DATABASE_NAME');
                         self::$user           = getenv('DATABASE_USER');
                         self::$password       = getenv('DATABASE_PASSWORD');
-                        self::$useDBSessions  = (boolean) getenv('DATABASE_SESSION_STORE_IN_DB');
-                        self::$sessionExpires = (integer) getenv('DATABASE_SESSION_EXPIRES');
 
                         if (
-                            self::$host === 'localhost' &&
                             !empty(getenv('DATABASE_SOCKET')) &&
                             getenv('DATABASE_SOCKET') !== 'NULL'
                         ) {
@@ -133,29 +121,10 @@
 
                     // CONNECT TO DATABASE | CHECK CONNECTION
 
-                        self::$db = self::$socket === NULL ? new mysqli(self::$host, self::$user, self::$password, self::$database) : new mysqli(NULL, self::$user, self::$password, self::$database, NULL, self::$socket);
+                        self::$db = (self::$socket === NULL) ? new mysqli(self::$host, self::$user, self::$password, self::$database) : new mysqli(NULL, self::$user, self::$password, self::$database, NULL, self::$socket);
 
                         if (self::$db->connect_error === TRUE) {
                             die ('<b style="color: #F00;">COULD NOT CONNECT TO THE DATABASE SERVER</b>');
-                        }
-
-                    // START SESSION IF REQUESTED
-
-                        if (self::$useDBSessions) {
-
-                            // RUN SET SESSION HANDLER METHOD | START SESSION
-
-                                session_set_save_handler (
-                                    [$this, 'openSession'],
-                                    [$this, 'closeSession'],
-                                    [$this, 'readSession'],
-                                    [$this, 'writeSession'],
-                                    [$this, 'destroySession'],
-                                    [$this, 'gcSession']
-                                );
-
-                                session_start();
-
                         }
 
                 }
@@ -166,16 +135,10 @@
 
                 final public function __destruct() {
 
-                    // CLOSE SESSION | CLOSE DATABASE
+                    // CLOSE DATABASE
 
                         if (self::$db instanceof mysqli) {
-
-                            if (self::$useDBSessions) {
-                                session_write_close();
-                            }
-
                             self::$db->close();
-
                         }
 
                 }
@@ -185,7 +148,7 @@
              ********************************************************************************/
 
                 /********************************************************************************
-                 * BACKUPMETHOD
+                 * BACKUP METHOD
                  * @param string $directory
                  * @return void
                  ********************************************************************************/
@@ -195,38 +158,29 @@
                         $user     = self::$user;
                         $password = self::$password;
                         $database = self::$database;
-                        $location = rtrim($directory, '/') . "/{$database}-" . date('Ymd') . '_' . time() . '.sql';
+                        $location = rtrim($directory, '/') . "/{$database}-" . date('Y-m-d') . '_' . time() . '.sql';
 
                         exec("mysqldump --user='{$user}' --password='{$password}' --single-transaction --routines --triggers {$database} > {$location}");
 
                     }
 
                 /********************************************************************************
-                 * INITIALIZE METHOD
-                 * @return void
-                 ********************************************************************************/
-
-                    final public static function initialize(): void {
-                        self::get();
-                    }
-
-                /********************************************************************************
                  * PREPARE METHOD
                  * @param string $query
-                 * @return mixed
+                 * @return mysqli_stmt|false
                  ********************************************************************************/
 
-                    final public static function prepare(string $query) {
+                    final public static function prepare(string $query): mysqli_stmt|false {
                         return self::get()->prepare($query);
                     }
 
                 /********************************************************************************
                  * QUERY METHOD
                  * @param string $query
-                 * @return mysqli_result
+                 * @return mysqli_result|false
                  ********************************************************************************/
 
-                    final public static function query(string $query): mysqli_result {
+                    final public static function query(string $query): mysqli_result|false {
                         return self::get()->query($query);
                     }
 
@@ -234,11 +188,11 @@
              * SANITIZE METHOD
              * Used to sanitize individual field values for database insertion.
              * @param mixed $value The value to be sanitized.
-             * @param string $dataType The DB datatype of the passed value
-             * @return mixed
-             ********************************************************************************/
+             * @param string|null $dataType The DB datatype of the passed value
+             * @return string|int|float|null
+             *******************************************************************************/
 
-                final public static function sanitize($value, string $dataType = NULL) {
+                final public static function sanitize(mixed $value, string $dataType = NULL): string|int|float|null {
 
                     // SANITIZE BASED ON FILTER TYPE | RETURN VALUE
 
@@ -262,77 +216,6 @@
 
                 }
 
-            /********************************************************************************
-             * SESSION HANDLER METHODS -> OPEN | CLOSE | READ | WRITE | DESTROY | GARBAGE COLLECTION
-             * NOTE: BOTH close() AND destroy($session_id) MUST BE PUBLIC IF session_destroy() IS USED IN SCRIPTS!!!
-             ********************************************************************************/
-
-                final public function openSession(): bool {return TRUE;}
-
-                final public function closeSession(): bool {return TRUE;}
-
-                final public function readSession($sessionId) {
-
-                    // SET CURRENT AND EXPIRATION TIME
-
-                        $now     = time();
-                        $expires = $now + (self::$sessionExpires * 60);
-
-                    // QUERY DATABASE FOR SESSION DATA
-                    // PROCESS SESSION IF ONE WAS RETURNED -> GET SESSION DATA | SET NEW EXPIRATION
-                    // RETURN SESSION DATA
-
-                        $result = self::$db->query("SELECT data FROM sessions WHERE id = '{$sessionId}' AND expires > {$now}");
-
-                        if ($result->num_rows == 1) {
-
-                            // GET SESSION DATA | SET NEW EXPIRATION
-
-                                $session = $result->fetch_assoc();
-                                $data    = $session['data'];
-
-                                self::$db->query("UPDATE sessions SET expires = {$expires} WHERE id = '{$sessionId}'");
-
-                        } else {
-                            $data = '';
-                        }
-
-                        return $data;
-
-                }
-
-                final public function writeSession($sessionId, $sessionData) {
-
-                    // SET INITIAL VARIABLES | REPLACE/INSERT SESSION DATA IN DATABASE -> RETURN RESULT
-
-                        $expires        = time() + (self::$sessionExpires * 60);
-                        $dbSessionData  = self::$db->real_escape_string($sessionData);
-
-                        return self::$db->query("INSERT INTO sessions (id, data, expires) VALUES ('{$sessionId}', '{$dbSessionData}', '{$expires}') ON DUPLICATE KEY UPDATE data = '{$dbSessionData}', expires = {$expires}");
-
-                }
-
-                final public function destroySession($sessionId) {
-                    return self::$db->query("DELETE FROM sessions WHERE id = {$sessionId}");
-                }
-
-                final public function gcSession() {
-                    return self::$db->query('DELETE FROM sessions WHERE expires <= UNIX_TIMESTAMP()');
-                }
-
-            /********************************************************************************
-             * SESSION CONVENIENCE METHOD
-             * Used to start session garbage collection. Intended to be called from a cron
-             * job, but can be called from anywhere.
-             * @return void
-             ********************************************************************************/
-
-                final public static function startSessionGarbageCollection(): void {
-
-                    self::get();
-                    self::$instance->gcSession();
-
-                }
-
         }
+
 ?>
