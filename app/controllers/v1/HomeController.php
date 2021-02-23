@@ -19,12 +19,13 @@
 
             /********************************************************************************
              * CONSTRUCT METHOD
+             * @param bool $authorizationRequired
              * @param array $values
              ********************************************************************************/
 
-                public function __construct(array $values) {
+                public function __construct(bool $authorizationRequired, array $values) {
 
-                    parent::__construct();
+                    parent::__construct($authorizationRequired);
                     $this->helloWorldMessage = 'Hello World, I am Manevia!';
                     $this->setResponse(['message' => $this->helloWorldMessage]);
 

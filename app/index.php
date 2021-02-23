@@ -55,6 +55,6 @@
 
         }
 
-        new $controller($uriValues);
+        new $controller(getenv('DEFAULT_AUTH_REQUIRED'), $uriValues);
 
 ?>

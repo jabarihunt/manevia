@@ -67,12 +67,13 @@
 
             /********************************************************************************
              * CONSTRUCT METHOD
+             * @param bool $authorizationRequired
              * @param array $values
              ********************************************************************************/
 
-                public function __construct(array $values) {
+                public function __construct(bool $authorizationRequired, array $values) {
 
-                    parent::__construct(false);
+                    parent::__construct($authorizationRequired);
 
                     // MAKE SURE A VALID ERROR CODE WAS PASSED. IF NOT, REDIRECT TO 404
 
