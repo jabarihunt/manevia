@@ -4,29 +4,25 @@
 
         /********************************************************************************
          * CLASS VARIABLES
-         * @var string $requestMethod
          * @var string $response
          ********************************************************************************/
 
-            protected string $requestMethod;
             protected string $response;
 
         /********************************************************************************
          * CONSTRUCT METHOD
          * @param bool $authorizationRequired
+         * @param array $values
          * @param bool $useCors
          ********************************************************************************/
 
-            public function __construct(bool $authorizationRequired, bool $useCors = TRUE) {
+            public function __construct(bool $authorizationRequired, array $values, bool $useCors = TRUE) {
 
                 if (!$authorizationRequired || $this->requestIsAuthorized()) {
 
-                    // SET REQUEST METHOD | SET CONTENT TYPE HEADER
+                    // SET CONTENT TYPE HEADER | SET CORS HEADERS
 
-                        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
                         header('Content-Type: application/json');
-
-                    // SET CORS HEADERS
 
                         if ($useCors) {
 
@@ -41,6 +37,16 @@
                             }
 
                         }
+
+                    // CALL REQUEST METHOD
+
+                        $requestMethod = strtolower(trim($_SERVER['REQUEST_METHOD']));
+
+                        if (method_exists($this, $requestMethod)) {
+                            $this->$requestMethod($values);
+                        }
+
+
                 } else {
 
                     // SEND UNAUTHORIZED
@@ -59,7 +65,7 @@
                 // HANDLE EMPTY RESPONSE
 
                     if (empty($this->response)) {
-                        $this->setResponse(NULL, 500, 'Internal Server Error');
+                        $this->setResponse([], 500, 'Internal Server Error');
                     }
 
                     echo $this->response;
@@ -81,11 +87,11 @@
                 // CHECK AUTHORIZATION
 
                     if (!empty($headers['Authorization'])) {
-                        /* DO REQUEST AUTHORIZATION HERE */
+                        /* TODO: DO REQUEST AUTHORIZATION HERE */
                     }
 
                 // RETURN RESULT
-
+return true;
                     return $isAuthorized;
 
             }

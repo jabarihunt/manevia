@@ -4,7 +4,6 @@
 
     /********************************************************************************
      * ERROR CONTROLLER
-     * PHP version 7.1+
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
@@ -73,7 +72,7 @@
 
                 public function __construct(bool $authorizationRequired, array $values) {
 
-                    parent::__construct($authorizationRequired);
+                    parent::__construct($authorizationRequired, $values);
 
                     // MAKE SURE A VALID ERROR CODE WAS PASSED. IF NOT, REDIRECT TO 404
 

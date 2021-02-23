@@ -11,8 +11,6 @@
      * Class that handles database connections, queries, and backups as well as
      * access and storage of session MySQL.
      *
-     * PHP version 7.1+
-     *
      ********************************************************************************
      * REQUIRED DB TABLE FOR MYSQL SESSIONS
      ********************************************************************************
