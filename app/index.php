@@ -43,7 +43,7 @@
      * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
      ********************************************************************************/
 
-        $authorizationRequired = getenv('DEFAULT_AUTH_REQUIRED');
+        $authorizationRequired = strtolower(getenv('DEFAULT_AUTH_REQUIRED')) === 'true';
         $controller            = ucfirst($endpoint) . 'Controller';
 
         if (!@include("controllers/{$version}/{$controller}.php")) {

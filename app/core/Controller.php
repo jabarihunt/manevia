@@ -18,42 +18,43 @@
 
             public function __construct(bool $authorizationRequired, array $values, bool $useCors = TRUE) {
 
-                if (!$authorizationRequired || $this->requestIsAuthorized()) {
+                // CHECK AUTHORIZATION
 
-                    // SET CONTENT TYPE HEADER | SET CORS HEADERS
+                    if (
+                        ($authorizationRequired && $this->requestIsAuthorized()) ||
+                        !$authorizationRequired
+                    ) {
 
-                        header('Content-Type: application/json');
+                        // SET CONTENT TYPE HEADER | SET CORS HEADERS
 
-                        if ($useCors) {
+                            header('Content-Type: application/json');
 
-                            header('Access-Control-Allow-Origin: *');
+                            if ($useCors) {
 
-                            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                                header('Access-Control-Allow-Origin: *');
 
-                                header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-                                header('Access-Control-Max-Age: 604800');
-                                header('Access-Control-Allow-Headers: Authorization');
+                                if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+
+                                    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+                                    header('Access-Control-Max-Age: 604800');
+                                    header('Access-Control-Allow-Headers: Authorization');
+
+                                }
 
                             }
 
-                        }
+                        // CALL REQUEST METHOD
 
-                    // CALL REQUEST METHOD
+                            $requestMethod = strtolower(trim($_SERVER['REQUEST_METHOD']));
 
-                        $requestMethod = strtolower(trim($_SERVER['REQUEST_METHOD']));
-
-                        if (method_exists($this, $requestMethod)) {
-                            $this->$requestMethod($values);
-                        }
+                            if (method_exists($this, $requestMethod)) {
+                                $this->$requestMethod($values);
+                            }
 
 
-                } else {
-
-                    // SEND UNAUTHORIZED
-
+                    } else {
                         $this->setResponse(['authorized' => false], 401);
-
-                }
+                    }
             }
 
         /********************************************************************************

@@ -27,12 +27,12 @@ RUN docker-php-ext-install mysqli && \
     rm /etc/apache2/sites-available/000-default.conf
 
 # Copy local code to the container image
+# Copy Apache config to container image
 COPY app/. /var/www/html/
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
-# Load new Apache configuration and php.ini file
-# Make entrypoint.sh executable
-# chmod cache directory
-RUN cp /var/www/html/cli/build_docs/000-default.conf /etc/apache2/sites-available/000-default.conf && \
-	sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
+# Configure new Apache configuration
+# Use production php.ini file
+RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
 	ln -s /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf && \
 	mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
