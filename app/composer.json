@@ -4,6 +4,7 @@
     "classmap-authoritative": true
   },
   "require": {
+    "ext-curl": "*",
     "ext-json": "*",
     "ext-mysqli": "*",
     "monolog/monolog": "*",

@@ -13,7 +13,7 @@
              * @return bool
              ********************************************************************************/
 
-                public static function isInteger($value): bool {
+                public static function isInteger(mixed $value): bool {
                     return(ctype_digit(strval($value)));
                 }
 
@@ -169,7 +169,7 @@
                 }
 
             /********************************************************************************
-             * VALIDATE EMAIL METHOD
+             * MAKE HTTP REQUEST METHOD
              * @param string $url
              * @param string $type
              * @param array $headers
@@ -250,7 +250,7 @@
 
                     }
                     else {
-                        throw new ErrorException('Invalid URL passed to Utilities:makePostRequest()');
+                        throw new ErrorException('Invalid URL passed to Utilities:makeHttpRequest()');
                     }
 
                 }
