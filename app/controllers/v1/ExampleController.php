@@ -3,7 +3,7 @@
     use Manevia\Controller;
 
     /********************************************************************************
-     * HOME CONTROLLER
+     * EXAMPLE CONTROLLER
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 

@@ -91,7 +91,7 @@
                     }
 
                 // RETURN RESULT
-return true;
+
                     return $isAuthorized;
 
             }
