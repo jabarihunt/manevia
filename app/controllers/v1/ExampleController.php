@@ -1,6 +1,6 @@
 <?php
 
-    use Manevia\v1Controller;
+    use Manevia\Controllers\v1Controller;
 
     /********************************************************************************
      * EXAMPLE CONTROLLER
@@ -29,6 +29,14 @@
 
                 public function __construct(bool $authorizationRequired, array $values) {
                     parent::__construct($authorizationRequired, $values);
+                }
+
+            /********************************************************************************
+             * DESTRUCT METHOD
+             ********************************************************************************/
+
+                public function __destruct() {
+                    parent::__destruct();
                 }
 
             /********************************************************************************
@@ -69,14 +77,6 @@
 
                 public function delete(array $values): void {
                     $this->setResponse(['methodCalled' => self::MESSAGES['delete']]);
-                }
-
-            /********************************************************************************
-             * DESTRUCT METHOD
-             ********************************************************************************/
-
-                public function __destruct() {
-                    parent::__destruct();
                 }
 
         }

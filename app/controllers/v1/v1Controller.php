@@ -1,4 +1,4 @@
-<?php namespace Manevia;
+<?php namespace Manevia\Controllers;
 
     class v1Controller {
 

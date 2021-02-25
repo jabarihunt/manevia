@@ -16,10 +16,10 @@
   "autoload": {
     "psr-4": {
       "Manevia\\": [
-        "controllers/v1/",
-        "core/",
-        "models/",
-        "models/base/"
+        "classes/Manevia/"
+      ],
+      "Manevia\\Controllers\\": [
+        "controllers/v1/"
       ]
     }
   }

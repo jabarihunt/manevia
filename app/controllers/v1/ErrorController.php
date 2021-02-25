@@ -1,6 +1,6 @@
 <?php
 
-    use Manevia\v1Controller;
+    use Manevia\Controllers\v1Controller;
 
     /********************************************************************************
      * ERROR CONTROLLER
