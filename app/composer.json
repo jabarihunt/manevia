@@ -8,7 +8,8 @@
     "ext-json": "*",
     "ext-mysqli": "*",
     "monolog/monolog": "*",
-    "jabarihunt/json-web-token": "*"
+    "jabarihunt/json-web-token": "*",
+    "jabarihunt/mysql": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
