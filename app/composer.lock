@@ -11,12 +11,12 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jabarihunt/JSON-Web-Token.git",
+                "url": "https://github.com/jabarihunt/json-web-token.git",
                 "reference": "30dd93e352933f9b637f4b8adf81d7bfd1888529"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jabarihunt/JSON-Web-Token/zipball/30dd93e352933f9b637f4b8adf81d7bfd1888529",
+                "url": "https://api.github.com/repos/jabarihunt/json-web-token/zipball/30dd93e352933f9b637f4b8adf81d7bfd1888529",
                 "reference": "30dd93e352933f9b637f4b8adf81d7bfd1888529",
                 "shasum": ""
             },

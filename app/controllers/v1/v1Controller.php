@@ -1,6 +1,6 @@
 <?php namespace Manevia;
 
-    class Controller {
+    class v1Controller {
 
         /********************************************************************************
          * CLASS VARIABLES

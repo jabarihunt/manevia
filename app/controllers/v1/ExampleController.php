@@ -1,13 +1,13 @@
 <?php
 
-    use Manevia\Controller;
+    use Manevia\v1Controller;
 
     /********************************************************************************
      * EXAMPLE CONTROLLER
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class ExampleController extends Controller {
+        final class ExampleController extends v1Controller {
 
             /********************************************************************************
              * CLASS VARIABLES
@@ -15,10 +15,10 @@
              ********************************************************************************/
 
                 const MESSAGES = [
-                    'get'    => 'get()',
-                    'post'   => 'post()',
-                    'put'    => 'put()',
-                    'delete' => 'delete()'
+                    'get'    => 'get() method was called',
+                    'post'   => 'post() method was called',
+                    'put'    => 'put() method was called',
+                    'delete' => 'delete() method was called'
                 ];
 
             /********************************************************************************
@@ -38,7 +38,7 @@
              ********************************************************************************/
 
                 public function get(array $values): void {
-                    $this->setResponse(['methodCalled' => self::MESSAGES['get']]);
+                    $this->setResponse(['whatHappened' => self::MESSAGES['get']]);
                 }
 
             /********************************************************************************

@@ -8,8 +8,7 @@
     "ext-json": "*",
     "ext-mysqli": "*",
     "monolog/monolog": "*",
-    "jabarihunt/json-web-token": "*",
-    "jabarihunt/mysql": "*"
+    "jabarihunt/json-web-token": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
@@ -17,7 +16,7 @@
   "autoload": {
     "psr-4": {
       "Manevia\\": [
-        "controllers/",
+        "controllers/v1/",
         "core/",
         "models/",
         "models/base/"

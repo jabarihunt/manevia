@@ -1,13 +1,13 @@
 <?php
 
-    use Manevia\Controller;
+    use Manevia\v1Controller;
 
     /********************************************************************************
      * ERROR CONTROLLER
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class ErrorController extends Controller {
+        final class ErrorController extends v1Controller {
 
             /********************************************************************************
              * CLASS VARIABLES
