@@ -15,12 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Manevia\\": [
-        "classes/Manevia/"
-      ],
-      "Manevia\\Controllers\\": [
-        "controllers/v1/"
-      ]
+      "Manevia\\": ["classes/Manevia/"],
+      "Manevia\\Controllers\\": ["controllers/v1/"]
     }
   }
 }

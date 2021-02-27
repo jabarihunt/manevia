@@ -172,9 +172,6 @@ nbactions.xml
 ### Vagrant ###
 .vagrant
 
-### Composer ###
-vendor/
-
 ### Dot Environment ###
 .env
 
