@@ -11,11 +11,10 @@
 # https://hub.docker.com/_/php
 FROM php:8.0-apache
 
-# Install and setup crons
 # Install PHP extensions & Apache Modules
 # Remove old Apache configuration
 RUN docker-php-ext-install mysqli && \
-	docker-php-ext-install gettext && \
+	# docker-php-ext-install gettext && \
     # pecl install redis && \
     # docker-php-ext-enable redis && \
 	service apache2 stop && \
@@ -26,13 +25,13 @@ RUN docker-php-ext-install mysqli && \
     rm /etc/apache2/sites-enabled/000-default.conf && \
     rm /etc/apache2/sites-available/000-default.conf
 
-# Copy local code to the container image
-# Copy Apache config to container image
-COPY app/. /var/www/html/
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
-
+# Copy new Apache config to container image
 # Configure new Apache configuration
 # Use production php.ini file
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
 	ln -s /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf && \
 	mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Copy local code to the container image
+COPY app/. /var/www/html/
