@@ -1,4 +1,6 @@
 {
+  "name": "jabarihunt/manevia",
+  "description": "",
   "config": {
     "optimize-autoloader": true,
     "classmap-authoritative": true

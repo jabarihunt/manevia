@@ -19,7 +19,7 @@ else
   echo -e "MANEVIA: .env file exists"
 fi
 
-# BUILD & RUN DOCKER
+# BUILD & RUN DOCKER INSTANCE
 if [[ -d app/vendor ]] && [[ -f .env ]]; then
   echo -e "MANEVIA: Starting Docker...\n"
 
