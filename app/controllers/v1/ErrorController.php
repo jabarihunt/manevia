@@ -64,6 +64,10 @@
                 public string $errorCode;
                 public string $errorMessage;
 
+            /*
+                -------------------------       MAGIC METHODS       -------------------------
+             */
+
             /********************************************************************************
              * CONSTRUCT METHOD
              * @param bool $authorizationRequired

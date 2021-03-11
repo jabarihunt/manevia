@@ -21,6 +21,10 @@
                     'delete' => 'delete() method was called'
                 ];
 
+            /*
+                -------------------------       MAGIC METHODS       -------------------------
+             */
+
             /********************************************************************************
              * CONSTRUCT METHOD
              * @param bool $authorizationRequired
@@ -38,6 +42,10 @@
                 public function __destruct() {
                     parent::__destruct();
                 }
+
+            /*
+                ---------------------------- REQUEST TYPE METHODS ---------------------------
+             */
 
             /********************************************************************************
              * GET METHOD
