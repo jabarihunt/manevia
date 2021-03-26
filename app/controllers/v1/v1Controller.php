@@ -18,30 +18,30 @@
 
             public function __construct(bool $authorizationRequired, array $values, bool $useCors = TRUE) {
 
+                // SET CONTENT TYPE HEADER | SET CORS HEADERS
+
+                    header('Content-Type: application/json');
+
+                    if ($useCors) {
+
+                        header('Access-Control-Allow-Origin: *');
+
+                        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+
+                            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+                            header('Access-Control-Max-Age: 604800');
+                            header('Access-Control-Allow-Headers: Authorization');
+
+                        }
+
+                    }
+
                 // CHECK AUTHORIZATION
 
                     if (
                         ($authorizationRequired && $this->requestIsAuthorized()) ||
                         !$authorizationRequired
                     ) {
-
-                        // SET CONTENT TYPE HEADER | SET CORS HEADERS
-
-                            header('Content-Type: application/json');
-
-                            if ($useCors) {
-
-                                header('Access-Control-Allow-Origin: *');
-
-                                if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-
-                                    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-                                    header('Access-Control-Max-Age: 604800');
-                                    header('Access-Control-Allow-Headers: Authorization');
-
-                                }
-
-                            }
 
                         // CALL REQUEST METHOD
 
@@ -50,7 +50,6 @@
                             if (method_exists($this, $requestMethod)) {
                                 $this->$requestMethod($values);
                             }
-
 
                     } else {
                         $this->setResponse(['authorized' => false], 401);
