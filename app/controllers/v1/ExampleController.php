@@ -28,11 +28,11 @@
             /********************************************************************************
              * CONSTRUCT METHOD
              * @param bool $authorizationRequired
-             * @param array $values
+             * @param array $urlValues
              ********************************************************************************/
 
-                public function __construct(bool $authorizationRequired, array $values) {
-                    parent::__construct($authorizationRequired, $values);
+                public function __construct(bool $authorizationRequired, array $urlValues) {
+                    parent::__construct($authorizationRequired, $urlValues);
                 }
 
             /********************************************************************************
@@ -49,41 +49,37 @@
 
             /********************************************************************************
              * GET METHOD
-             * @param array $values
              * @retrun void
              ********************************************************************************/
 
-                public function get(array $values): void {
+                public function get(): void {
                     $this->setResponse(['whatHappened' => self::MESSAGES['get']]);
                 }
 
             /********************************************************************************
              * POST METHOD
-             * @param array $values
              * @retrun void
              ********************************************************************************/
 
-                public function post(array $values): void {
+                public function post(): void {
                     $this->setResponse(['methodCalled' => self::MESSAGES['post']]);
                 }
 
             /********************************************************************************
              * PUT METHOD
-             * @param array $values
              * @retrun void
              ********************************************************************************/
 
-                public function put(array $values): void {
+                public function put(): void {
                     $this->setResponse(['methodCalled' => self::MESSAGES['put']]);
                 }
 
             /********************************************************************************
              * DELETE METHOD
-             * @param array $values
              * @retrun void
              ********************************************************************************/
 
-                public function delete(array $values): void {
+                public function delete(): void {
                     $this->setResponse(['methodCalled' => self::MESSAGES['delete']]);
                 }
 
