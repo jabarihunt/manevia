@@ -14,7 +14,7 @@
             protected string $response;
             protected array $urlValues;
 
-            const ERRORS = [
+            const HTTP_ERRORS = [
                 '400' => 'Bad Request',
                 '401' => 'Unauthorized',
                 '402' => 'Payment Required',
@@ -170,18 +170,18 @@
          * SET RESPONSE MESSAGE METHOD
          * BASED ON JSEND: https://github.com/omniti-labs/jsend
          * @param array $data
-         * @param int $htmlCode
+         * @param int $httpCode
          * @param string|null $errorMessage
          * @return void
          ********************************************************************************/
 
-            protected function setResponse(array $data = [], int $htmlCode = 200, string $errorMessage = NULL): void {
+            protected function setResponse(array $data = [], int $httpCode = 200, string $errorMessage = NULL): void {
 
                 // BUILD RESPONSE
 
                     $response = [];
 
-                    if ($htmlCode === 200 && !empty($data)) {
+                    if ($httpCode === 200 && !empty($data)) {
 
                         header("HTTP/1.1 200 OK");
 
@@ -192,20 +192,20 @@
 
                     } else {
 
-                        header("HTTP/1.1 {$htmlCode} {$errorMessage}");
-                        $response['status'] = ($htmlCode >= 500) ? 'error' : 'fail';
+                        header("HTTP/1.1 {$httpCode} {$errorMessage}");
+                        $response['status'] = ($httpCode >= 500) ? 'error' : 'fail';
 
                         if ($response['status'] === 'error') {
 
-                            $response['code']    = $htmlCode;
-                            $response['message'] = self::ERRORS[strval($htmlCode)];
+                            $response['code']    = $httpCode;
+                            $response['message'] = self::HTTP_ERRORS[strval($httpCode)];
 
                         } else {
 
                             if (empty($data)) {
 
                                 $response['data'] = [
-                                    'code' => $htmlCode,
+                                    'code' => $httpCode,
                                     'message' => $errorMessage
                                 ];
 
