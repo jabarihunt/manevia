@@ -5,14 +5,14 @@
         /********************************************************************************
          * CLASS VARIABLES
          * @var string $requestBody
+         * @var array $requestUrlValues
          * @var string $response
-         * @var array $urlValues
          * @var array ERRORS
          ********************************************************************************/
 
             protected string $requestBody;
+            protected array $requestUrlValues;
             protected string $response;
-            protected array $urlValues;
 
             const HTTP_ERRORS = [
                 '400' => 'Bad Request',
@@ -62,15 +62,15 @@
         /********************************************************************************
          * CONSTRUCT METHOD
          * @param bool $authorizationRequired
-         * @param array $urlValues
+         * @param array $requestUrlValues
          * @param bool $useCors
          ********************************************************************************/
 
-            public function __construct(bool $authorizationRequired, array $urlValues, bool $useCors = TRUE) {
+            public function __construct(bool $authorizationRequired, array $requestUrlValues, bool $useCors = TRUE) {
 
                 // SET URL VALUES | SET CONTENT TYPE HEADER
 
-                    $this->urlValues = $urlValues;
+                    $this->requestUrlValues = $requestUrlValues;
                     header('Content-Type: application/json');
 
                 // SET CORS HEADERS
@@ -160,10 +160,7 @@
          ********************************************************************************/
 
             protected function getJSONData(): array|null {
-
-                $data = file_get_contents("php://input");
-                return !empty($data) ? json_decode($data, TRUE) : NULL;
-
+                return !empty($json) ? json_decode($json, TRUE) : NULL;
             }
 
         /********************************************************************************
