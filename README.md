@@ -40,29 +40,30 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 
 ```bash
 .
-|-- app/
-|----classes/
-|------Manevia/
-|--------Utilities.php
-|----controllers/
-|------v1/
-|--------ExampleController.php
-|--------v1Controller.php
-|----composer.json
-|----composer.loc
-|----index.php
-|-- cli/
-|----manevia.php
-|-- .env.example
-|-- .gitattributes
-|-- .gitignore
-|-- Dockerfile
-|-- LICENSE.md
-|-- README.md
-|-- apache.conf
-|-- restart.sh
-|-- start.sh
-|-- stop.sh
+├── app
+│   ├── classes
+│   │   └── Manevia
+│   │       └── Utilities.php
+│   ├── composer.json
+│   ├── composer.lock
+│   ├── controllers
+│   │   └── v1
+│   │       ├── ExampleController.php
+│   │       └── v1Controller.php
+│   ├── index.php
+│   └── tests
+├── cli
+│   └── manevia.php
+├── .env.example
+├── .gitattributes
+├── .gitignore
+├── Dockerfile
+├── LICENSE.md
+├── README.md
+├── apache.conf
+├── restart.sh
+├── start.sh
+└── stop.sh
 ```
 
 ## CONTRIBUTING
