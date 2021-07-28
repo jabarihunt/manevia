@@ -19,7 +19,7 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
  1. Clone this repository into your working directory | `git clone https://github.com/jabarihunt/manevia.git .`
  2. Copy _.env.example_ to _.env_ | `cp .env.example .env`
  3. Open the .env file and edit your docker app and tag names if you so choose.  You can also change the port number that docker will use for your application.
- 4. If using the default model builder, add the following to your .env file (with your credentials):
+ 4. _OPTIONAL:_ If using the default model builder, add the following to your .env file (with your credentials):
      ```
     # MYSQL
     MYSQL_HOST="your.db.host.name"
@@ -29,8 +29,9 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
     MYSQL_SOCKET=null
     MYSQL_PORT=3306
      ```
-     > **NOTE:** If using sockets, set `MYSQL_HOSTNAME` equal to `null` and set `MYSQL_SOCKET` to your socket string.  You should use one or the other.  **If both are set, it will default to using a TCP connection.** 
- 5. Run the start script | `./start.sh`
+     > **NOTE:** If using sockets, set `MYSQL_HOSTNAME` equal to `null` and set `MYSQL_SOCKET` to your socket string.  You should use one or the other.  **If both are set, it will default to using a TCP connection.**
+ 5. Run Composer | `composer install`
+ 6. Run the start script | `./start.sh`
  
 **THAT'S IT!**  Your docker instance will build & run, and you can access your app at `http://localhost:8080/`.
 
