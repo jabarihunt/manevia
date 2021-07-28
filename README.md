@@ -38,6 +38,8 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
 
 Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The directory structure is straight forward, everything is exactly where you'd expect it to be (nothing buried in a sea of directories).
 
+```bash
+.
 |-- app/
 |----classes/
 |------Manevia/
@@ -61,6 +63,7 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 |-- restart.sh
 |-- start.sh
 |-- stop.sh
+```
 
 ## CONTRIBUTING
 
