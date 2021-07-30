@@ -35,7 +35,7 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
  5. Run Composer | `composer install`
  6. Run the start script | `./start.sh`
  
-**THAT'S IT!**. Your docker instance will build & run, then you may access your app at `http://localhost:8080/`.
+**THAT'S IT!** Your docker instance will build & run, then you may access your app at `http://localhost:8080/`.
 
 ## Application Structure
 
