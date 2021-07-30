@@ -2,11 +2,13 @@
 
 Manevia is an open source PHP framework.  I know, it isn't like we need another one of those, but Manevia goes against the grain in a few different ways.  While I think it's a bit more than a micro framework, it definitely isn't a "kitchen sink" solution.  A few things to consider...
 
+- **API Specific!** Manevia was originally conceived as a full stack framework, serving both front-end and back-end code.  It is now geared very specifically towards back-end API development.  This allows applications to be built in a more modern way, with a single API servicing multiple front end clients (_web, mobile apps, desktop, IoT, etc_). 
+
 - **Simplicity & Minimalism** is a key concept.  The term "_framework_" is overly used these days as most frameworks grew from being a frame to build your code upon to containing many features as key components of your application right out of the box.  There is nothing wrong with that per say, but most applications use less than 20% of the features of popular frameworks.  That other 80% generally aids in complexity and/or inhibits performance.  PHP has an [outstanding package manager](https://getcomposer.org/)!  Rather than including functionality that may or may not be used and/or forcing developers to use those features in a specific way, Manevia purposely stays simple and minimal, allowing you to bolt on the exact features you need and nothing else.
 
-- **API Specific:** Manevia was originally conceived as a full stack framework, serving both front-end and back-end code.  It is now geared very specifically towards back-end API development.  This allows applications to be built in a more modern way, with a single API servicing multiple front end clients (_web, mobile apps, desktop, IoT, etc_). 
+- **No Framework Updates!**  One of the core goals of Manevia is to _NOT_ include any functionality that may be added via Composer.  While most "_frameworks_" build more and more features into their codebase, Manevia attempts to strip functionality out.  Therefore, once that application is started it becomes its own instance completely detached from the original Manevia framework codebase.  A key feature of this is that it is 100% OK to alter framework core files to fit your application's needs!  Think of Manevia as a starting point of a completely custom whiteboard application.
 
-- **No ORM** is used in Manevia, at least not in a traditional sense.   It is designed to be as modular as possible.  You can use [Doctrine ORM](https://github.com/doctrine/orm), Eloquent ORM via the [illuminate/database](https://packagist.org/packages/illuminate/database) Composer package, or any other library your heart desires!  Manevia does have a [default model builder](https://github.com/jabarihunt/mysql-model-builder).  Rather than building migrations and seeds first, with the model builder you'll work in the opposite direction.  Instead, you'll first create a well designed database that is optimized for the way your application needs to consume data.  Then you will run the model builder (_a quick single line command_) that will build models that you can immediately begin using within Manevia.
+- **No ORM** is used in Manevia, at least not in a traditional sense.   It is designed to be as modular as possible.  You can use [Doctrine ORM](https://github.com/doctrine/orm), Eloquent ORM via the [illuminate/database](https://packagist.org/packages/illuminate/database) Composer package, or any other library your heart desires!  Manevia does have a [default model builder](https://github.com/jabarihunt/mysql-model-builder).  Rather than building migrations and seeds first, with the model builder you'll work in the opposite direction.  Instead, you'll first create a well designed database that is optimized for the way your application needs to consume data.  Then you will run the model builder (_a quick single line command_) that will build models that you can immediately begin using within Manevia.  The default model builder may be removed by simply removing the `jabarihunt/mysql-model-builder` package from Composer!
 
 - **Docker** is the prefered contanerization platform for manevia.  This makes both creating dev environments and deploying applications dead simple (_as demonstrated below_)!  Manevia was developed with serverless containerized services in mind, such as [Google Cloud Run](https://cloud.google.com/run), [AWS Fargate](https://aws.amazon.com/fargate/), and [Digital Ocean App Platform](https://www.digitalocean.com/products/app-platform/).  You can setup and deploy applications on these platforms in minutes!
 
@@ -66,8 +68,86 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 ├── start.sh
 └── stop.sh
 ```
+## Making Manevia Your Own
 
-## CONTRIBUTING
+Initial customization of Manevia to make it your own app is very simple, and generally just requires changes in the [app/composer.json](app/composer.json) file.  For example sake, we're going to make changes for a fictional application by the _ACME Corporation_ called _Anvil_.
+
+### Application Details
+
+In this example we will be changing the `name` and `description` properties of the application.   Since any [official properties](https://getcomposer.org/doc/04-schema.md#properties) of the [composer.json schema](https://getcomposer.org/doc/04-schema.md) may be added, we will also add the application `type` (_which defaults to "library"_):
+
+```json
+{
+  "name": "acme/anvil",
+  "description": "The ACME Anvil app is the absolute best way to knock your block off!",
+  "type": "project",
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+  },
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mysqli": "*",
+    "monolog/monolog": "*",
+    "jabarihunt/json-web-token": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Manevia\\": ["classes/Manevia/"],
+      "Manevia\\Controllers\\": ["controllers/v1/"]
+    }
+  }
+}
+```
+
+### Namespacing
+
+> **TIP:** If you are unfamiliar with namespacing, SymfonyCasts has a great [5 minute video tutorial](https://symfonycasts.com/screencast/php-namespaces/namespaces) that is well worth the watch.
+
+Adding & namespacing your own classes in Manevia is the same as in any other Composer based project using PSR-4.  It is recommended that you create a folder within the _app/classes_ directory to store your namespaced classes.  For example sake, we're going to add a namespace for our fictional application.  It's a simple two step process:
+
+1. Create a folder to save your classes.  As recommended above, we're going to create a folder named "ACME" in the _app/classes_ directory.  Our new directory path from the project root will be `app/classes/ACME`.
+
+2. Open the composer.json file, then add the namespace and associated folder under the `psr-4` section as shown below:
+
+    > **NOTE:** Do not remove the entries for "Manevia", as it will break the core features of the framework!
+
+    ```json
+    {
+      "name": "acme/anvil",
+      "description": "The ACME Anvil app is the absolute best way to knock your block off!",
+      "type": "project",
+      "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
+      },
+      "require": {
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mysqli": "*",
+        "monolog/monolog": "*",
+        "jabarihunt/json-web-token": "*"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "*"
+      },
+      "autoload": {
+        "psr-4": {
+          "ACME\\": ["classes/ACME"],
+          "Manevia\\": ["classes/Manevia/"],
+          "Manevia\\Controllers\\": ["controllers/v1/"]
+        }
+      }
+    }
+    ````
+    
+You can find extended documentation on autoloading and namespacing in Composer [here](https://getcomposer.org/doc/04-schema.md#autoload).
+
+## Contributing
 
 1. Fork Repository
 2. Create a descriptive branch name
@@ -75,6 +155,6 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 4. Squash (rebase) your commits
 5. Create a pull request
 
-## LICENSE
+## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
