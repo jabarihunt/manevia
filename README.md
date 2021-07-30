@@ -31,7 +31,7 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
     MYSQL_SOCKET=null
     MYSQL_PORT=3306
      ```
-     > **NOTE:** If using sockets, set `MYSQL_HOSTNAME` equal to `null` and set `MYSQL_SOCKET` to your socket string.  You should use one or the other.  **If both are set, it will default to using a TCP connection.**
+     > _**NOTE:** If using sockets, set `MYSQL_HOSTNAME` equal to `null` and set `MYSQL_SOCKET` to your socket string.  You should use one or the other.  **If both are set, it will default to using a TCP connection.**_
  5. Run Composer | `composer install`
  6. Run the start script | `./start.sh`
  
@@ -106,7 +106,7 @@ In this example we will be changing the `name` and `description` properties of t
 
 ### Namespacing
 
-> **TIP:** If you are unfamiliar with namespacing, SymfonyCasts has a great [5 minute video tutorial](https://symfonycasts.com/screencast/php-namespaces/namespaces) that is well worth the watch.
+> _**TIP:** If you are unfamiliar with namespacing, SymfonyCasts has a great [5 minute video tutorial](https://symfonycasts.com/screencast/php-namespaces/namespaces) that is well worth the watch._
 
 Adding & namespacing your own classes in Manevia is the same as in any other Composer based project using PSR-4.  It is recommended that you create a folder within the _app/classes_ directory to store your namespaced classes.  For example sake, we're going to add a namespace for our fictional application.  It's a simple two step process:
 
@@ -114,7 +114,7 @@ Adding & namespacing your own classes in Manevia is the same as in any other Com
 
 2. Open the composer.json file, then add the namespace and associated folder under the `psr-4` section as shown below:
 
-    > **NOTE:** Do not remove the entries for "Manevia", as it will break the core features of the framework!
+    > _**NOTE:** Do not remove the entries for "Manevia", as it will break the core features of the framework!_
 
     ```json
     {
