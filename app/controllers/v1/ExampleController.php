@@ -53,7 +53,7 @@
              ********************************************************************************/
 
                 public function get(): void {
-                    $this->setResponse(['whatHappened' => self::MESSAGES['get']]);
+                    $this->setResponse(['methodCalled' => self::MESSAGES['get']]);
                 }
 
             /********************************************************************************
