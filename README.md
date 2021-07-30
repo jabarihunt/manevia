@@ -19,8 +19,8 @@ Manevia is an open source PHP framework.  I know, it isn't like we need another 
 If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on your machine.  While most of the major steps to get up an running fast have been automated, there are a few simple steps that you must do manually (for now)..
 
  1. Clone this repository into your working directory | `git clone https://github.com/jabarihunt/manevia.git .`
- 2. Copy _.env.example_ to _.env_ | `cp .env.example .env`
- 3. Open the [.env](.env) file and edit your docker app and tag names if you so choose.  You can also change the port number that docker will use for your application.
+ 2. Copy _[.env.example](.env.example)_ to _.env_ | `cp .env.example .env`
+ 3. Open the _.env_ file and edit your docker app and tag names if you so choose.  You can also change the port number that docker will use for your application.
  4. **_OPTIONAL:_** If using the default model builder, add the following to your .env file (with your credentials):
      ```
     # MYSQL
