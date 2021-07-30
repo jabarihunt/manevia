@@ -12,7 +12,7 @@ Manevia is an open source PHP framework.  I know, it isn't like we need another 
 
 - **Docker** is the prefered contanerization platform for manevia.  This makes both creating dev environments and deploying applications dead simple (_as demonstrated below_)!  Manevia was developed with serverless containerized services in mind, such as [Google Cloud Run](https://cloud.google.com/run), [AWS Fargate](https://aws.amazon.com/fargate/), and [Digital Ocean App Platform](https://www.digitalocean.com/products/app-platform/).  You can setup and deploy applications on these platforms in minutes!
 
-> **Note:** Manevia is _NOT_ for everyone!  It was never intended to be.  If you like to trade convenience for performance (_and I don't mean that in a negative way_) then this framework probably isn't going to suit you.  If you honestly enjoy coding and were probably a DBA in another life then you'll fit right in!
+> _**Note:** Manevia is _NOT_ for everyone!  It was never intended to be.  If you like to trade convenience for performance (and I don't mean that in a negative way) then this framework probably isn't going to suit you.  If you honestly enjoy coding and were probably a DBA in another life then you'll fit right in!_
 
 ## 5 Minute Quick Start!
 
