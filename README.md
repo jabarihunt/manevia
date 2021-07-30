@@ -89,8 +89,7 @@ In this example we will be changing the `name` and `description` properties of t
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mysqli": "*",
-    "monolog/monolog": "*",
-    "jabarihunt/json-web-token": "*"
+    "jabarihunt/mysql-model-builder": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
@@ -129,8 +128,7 @@ Adding & namespacing your own classes in Manevia is the same as in any other Com
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mysqli": "*",
-        "monolog/monolog": "*",
-        "jabarihunt/json-web-token": "*"
+        "jabarihunt/mysql-model-builder": "*"
       },
       "require-dev": {
         "phpunit/phpunit": "*"
