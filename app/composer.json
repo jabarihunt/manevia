@@ -9,8 +9,7 @@
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mysqli": "*",
-    "monolog/monolog": "*",
-    "jabarihunt/json-web-token": "*"
+    "jabarihunt/mysql-model-builder": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
