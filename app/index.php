@@ -44,8 +44,8 @@
      ********************************************************************************/
 
         $authorizationRequired = strtolower(getenv('DEFAULT_AUTH_REQUIRED')) === 'true';
-        $controller            = ucfirst($endpoint) . 'Controller';
-
+        $controller            = \Manevia\Utilities::slugToCamel($endpoint, TRUE) . 'Controller';
+echo $controller; die();
         if (!@include("controllers/{$version}/{$controller}.php")) {
 
             $version    = 'v' . getenv('DEFAULT_API_VERSION');
