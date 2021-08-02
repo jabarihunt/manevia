@@ -151,7 +151,7 @@ Now that we have a basic Manavia instance up and running for our fictional ACME 
 
 Routing in Manevia is done by convention rather than with explicit definition and tries to follow RESTful API best practices in doing so.  The expected URL path uses the following pattern:
 
-    `protocol://domain/version/endpoint/{resourceId)?query_component=query_component_value`
+    protocol://domain/version/endpoint/{resourceId)?query_component=query_component_value
     
 - **protocol:** While all APIs _should_ use HTTPS, there is nothing that prevents the use of HTTP.
 
@@ -165,7 +165,7 @@ Routing in Manevia is done by convention rather than with explicit definition an
     
 ...so our `drop` endpoint will have the follwing URL...
     
-    `https://anvil.acme.io/v1/drop`
+    https://anvil.acme.io/v1/drop
 
 ### Controllers
 
