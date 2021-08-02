@@ -35,7 +35,7 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
  5. Run Composer | `composer install`
  6. Run the start script | `./start.sh`
  
-**THAT'S IT!** Your docker instance will build & run, then you may access your app at `http://localhost:8080/`.
+**THAT'S IT!** Your docker instance will build & run, then you may access your app at `http://localhost:8080/` (or whatever port you specified in _.env_).
 
 ## Application Structure
 
@@ -145,7 +145,7 @@ You can find extended documentation on autoloading and namespacing in Composer [
 
 ## Endpoints & Routing
 
-Now that we have a basic Manavia instance up and running for our fictional ACME Anvil API, let's add an endpoint called `drop`.  We will assume a domain name of `anvil.acme.io`.
+Now that we have a basic Manavia instance up and running for our fictional ACME Anvil API, let's add an endpoint called `drop`.
 
 ### Routing
 
@@ -163,9 +163,9 @@ Routing in Manevia is done by convention rather than with explicit definition an
 
 - **resourceId:** While the resource ID is normally nummeric, it may be any string.
     
-...so our `drop` endpoint will have the follwing URL...
+Taking this into consideration, ur `drop` endpoint will have the follwing URL for local development:
     
-    https://anvil.acme.io/v1/drop
+`https://localhost:8080/v1/drop`
 
 ### Controllers
 
