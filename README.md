@@ -155,15 +155,15 @@ Routing in Manevia is done by convention rather than with explicit definition an
 
     `protocol://domain/version/endpoint/{resourceId)?query_component=query_component_value`
     
-**protocol:** While all APIs _should_ use HTTPS, there is nothing that prevents the use of HTTP.
+- **protocol:** While all APIs _should_ use HTTPS, there is nothing that prevents the use of HTTP.
 
-**domain:** Manevia is completely domain agnostic, feel free to fashion any domain any way you see fit.
+- **domain:** Manevia is completely domain agnostic, feel free to fashion any domain any way you see fit.
 
-**version:** API version numbers may use any numeric version convention that you like, but it must start with the letter "v".
+- **version:** API version numbers may use any numeric version convention that you like, but it must start with the letter "v".
 
-**endpoint:** Endpoint names must not have any spaces, be all lowercase, and use hyphens ("-") rather than underscores ("_").
+- **endpoint:** Endpoint names must not have any spaces, be all lowercase, and use hyphens ("-") rather than underscores ("_").
 
-**resourceId:** While the resource ID is normally nummeric, it may be any string.
+- **resourceId:** While the resource ID is normally nummeric, it may be any string.
     
 ...so our `drop` domain will have the follwing endpoint...
     
