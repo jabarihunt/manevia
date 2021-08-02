@@ -165,7 +165,7 @@ Routing in Manevia is done by convention rather than with explicit definition an
 
 **resourceId:** While the resource ID is normally nummeric, it may be any string.
     
-    ...so our `drop` domain will have the follwing endpoint...
+...so our `drop` domain will have the follwing endpoint...
     
     `https://anvil.acme.io/v1/drop`
 
