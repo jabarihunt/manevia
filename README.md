@@ -163,9 +163,7 @@ Routing in Manevia is done by convention rather than with explicit definition an
 
 - **resourceId:** While the resource ID is normally nummeric, it may be any string.
     
-Taking this into consideration, ur `drop` endpoint will have the follwing URL for local development:
-    
-`https://localhost:8080/v1/drop`
+Taking this into consideration, ur `drop` endpoint will have the follwing URL for local development: `https://localhost:8080/v1/drop`
 
 ### Controllers
 
