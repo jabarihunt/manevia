@@ -52,8 +52,7 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 │   │   └── v1
 │   │       ├── ExampleController.php
 │   │       └── v1Controller.php
-│   ├── index.php
-│   └── tests
+│   └── index.php
 ├── cli
 │   └── manevia.php
 ├── .env.example
