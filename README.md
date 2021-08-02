@@ -48,7 +48,6 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 │   │   └── Manevia
 │   │       └── Utilities.php
 │   ├── composer.json
-│   ├── composer.lock
 │   ├── controllers
 │   │   └── v1
 │   │       ├── ExampleController.php
