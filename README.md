@@ -145,7 +145,7 @@ You can find extended documentation on autoloading and namespacing in Composer [
 
 ## Endpoints & Routing
 
-Now that we have a basic Manavia instance up and running for our fictional ACME Anvil API, let's add an endpoint: `drop`.  We will assume a domain name of `anvil.acme.io`.
+Now that we have a basic Manavia instance up and running for our fictional ACME Anvil API, let's add an endpoint called `drop`.  We will assume a domain name of `anvil.acme.io`.
 
 ### Routing
 
