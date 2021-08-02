@@ -145,6 +145,36 @@ Adding & namespacing your own classes in Manevia is the same as in any other Com
     
 You can find extended documentation on autoloading and namespacing in Composer [here](https://getcomposer.org/doc/04-schema.md#autoload).
 
+## Usage
+
+Now that we have a basic Manavia instance up and running for our fictional ACME Anvil API, let's add an endpoint: `drop`.  We will assume a domain name of `anvil.acme.io`.
+
+### Routing
+
+Routing in Manevia is done by convention rather than with explicit definition and tries to follow RESTful API best practices in doing so.  The expected URL path uses the following pattern:
+
+    `protocol://domain/version/endpoint/{resourceId)?query_component=query_component_value`
+    
+**protocol:** While all APIs _should_ use HTTPS, there is nothing that prevents the use of HTTP.
+
+**domain:** Manevia is completely domain agnostic, feel free to fashion any domain any way you see fit.
+
+**version:** API version numbers may use any numeric version convention that you like, but it must start with the letter "v".
+
+**endpoint:** Endpoint names must not have any spaces, be all lowercase, and use hyphens ("-") rather than underscores ("_").
+
+**resourceId:** While the resource ID is normally nummeric, it may be any string.
+    
+    ...so our `drop` domain will have the follwing endpoint...
+    
+    `https://anvil.acme.io/v1/drop`
+
+### Controllers
+
+
+
+
+
 ## Contributing
 
 1. Fork Repository
