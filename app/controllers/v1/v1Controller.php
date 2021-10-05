@@ -172,7 +172,7 @@
          * @return void
          ********************************************************************************/
 
-            protected function setResponse(array $data = [], int $httpCode = 200, string $errorMessage = NULL): void {
+            protected function setResponse(array|null $data = [], int $httpCode = 200, string $errorMessage = NULL): void {
 
                 // BUILD RESPONSE
 

@@ -33,9 +33,9 @@ If you haven't already, [install Docker](https://docs.docker.com/get-docker/) on
      ```
      > _**NOTE:** If using sockets, set `MYSQL_HOSTNAME` equal to `null` and set `MYSQL_SOCKET` to your socket string.  You should use one or the other.  **If both are set, it will default to using a TCP connection.**_
  5. Run Composer | `composer install`
- 6. Run the start script | `./start.sh`
+ 6. Run the start script | `./Docker.sh start` (_or just `./Docker.sh`_)
  
-**THAT'S IT!** Your docker instance will build & run, then you may access your app at `http://localhost:8080/` (or whatever port you specified in _.env_).
+**THAT'S IT!** Your docker instance will build & run, then you may access your app at `http://localhost:8080/` (_or whatever port you specified in .env_).  You can restart the container by running `./Docker.sh restart` or stop/destroy it by running `./Docker.sh stop`.
 
 ## Application Structure
 
@@ -63,7 +63,7 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 ├── README.md
 ├── apache.conf
 ├── restart.sh
-├── start.sh
+├── Docker.sh
 └── stop.sh
 ```
 ## Making Manevia Your Own

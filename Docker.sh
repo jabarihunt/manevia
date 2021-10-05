@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# STOP ALL RUNNING CONTAINERS IF stop OR restart REQUESTED
+if [[ $1 = "stop" ]] || [[ $1 = "restart" ]]; then
+  echo -e "Stopping all running containers......"
+  # shellcheck disable=SC2046
+  eval docker stop $(docker ps -a -q)
+
+  echo -e "Removing all stopped containers......"
+  # shellcheck disable=SC2046
+  eval docker rm $(docker ps -a -q)
+
+  if [[ $1 = "stop" ]]; then
+    exit
+  fi
+fi
+
 # RUN COMPOSER IF VENDOR DIRECTORY DOESN'T EXIST
 if [[ ! -d app/vendor ]] && [[ -x "$(which composer)" ]]; then
   echo -e "\nMANEVIA: Running Composer...\n"
