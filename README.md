@@ -62,9 +62,8 @@ Like most modern frameworks, Manevia follows a MVC(ish) design pattern.  The dir
 ├── LICENSE.md
 ├── README.md
 ├── apache.conf
-├── restart.sh
-├── Docker.sh
-└── stop.sh
+└── Docker.sh
+
 ```
 ## Making Manevia Your Own
 
