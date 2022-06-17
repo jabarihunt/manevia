@@ -40,7 +40,7 @@
         }
 
     /********************************************************************************
-     * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO VIEW FOR RENDERING
+     * CONTROLLER -> INSTANTIATE NAME | LOAD | PASS DATA TO CONTROLLER FOR PROCESSING
      ********************************************************************************/
 
         $authorizationRequired = strtolower(getenv('DEFAULT_AUTH_REQUIRED')) === 'true';
@@ -56,6 +56,7 @@
 
         }
 
+        $controller = "\\Manevia\\Controllers\\{$version}\\" . $controller;
         new $controller($authorizationRequired, $uriValues);
 
 ?>

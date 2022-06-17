@@ -1,13 +1,11 @@
-<?php
-
-    use Manevia\Controllers\v1Controller;
+<?php namespace Manevia\Controllers\v1;
 
     /********************************************************************************
      * EXAMPLE CONTROLLER
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class ExampleController extends v1Controller {
+        final class ExampleController extends Controller {
 
             /********************************************************************************
              * CLASS VARIABLES

@@ -1,6 +1,5 @@
-<?php
+<?php namespace Manevia\Controllers\v1;
 
-    use Manevia\Controllers\v1Controller;
     use Manevia\Utilities;
 
     /********************************************************************************
@@ -8,7 +7,7 @@
      * @author Jabari J. Hunt <jabari@jabari.net>
      ********************************************************************************/
 
-        final class ErrorController extends v1Controller {
+        final class ErrorController extends Controller {
 
             /********************************************************************************
              * CLASS VARIABLES
