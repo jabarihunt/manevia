@@ -188,28 +188,10 @@
                         ];
 
                     } else {
-
                         header("HTTP/1.1 {$httpCode} {$errorMessage}");
-                        $response['status'] = ($httpCode >= 500) ? 'error' : 'fail';
-
-                        if ($response['status'] === 'error') {
-
-                            $response['code']    = $httpCode;
-                            $response['message'] = self::HTTP_ERRORS[strval($httpCode)];
-
-                        } else {
-
-                            if (empty($data)) {
-
-                                $response['data'] = [
-                                    'code' => $httpCode,
-                                    'message' => $errorMessage
-                                ];
-
-                            }
-
-                        }
-
+                        $response['status']  = ($httpCode >= 500) ? 'error' : 'fail';
+                        $response['code']    = $httpCode;
+                        $response['message'] = self::HTTP_ERRORS[strval($httpCode)];
                     }
 
                 // SET CLASS RESPONSE VARIABLE AS JSON STRING
