@@ -107,6 +107,8 @@
                                     $this->requestBody = file_get_contents('php://input');
                                     $this->$requestMethod();
 
+                            } else {
+                                $this->setResponse([], 405);
                             }
 
                     } else {
