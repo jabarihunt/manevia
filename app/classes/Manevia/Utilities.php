@@ -140,6 +140,53 @@
                 }
 
             /********************************************************************************
+             * CAMEL TO SNAKE
+             * @param string|array $data
+             * @return string|array
+             ********************************************************************************/
+
+                public static function camelToSnake(string|array $data): string|array {
+
+                    if (is_string($data)) {
+                        $data = strtolower(preg_replace("/([a-z])([A-Z])/", "$1_$2", $data));
+                    } else {
+                        foreach ($data as $key => $value) {
+                            if (!Utilities::isInteger($key)) {
+                                $data['key'] = strtolower(preg_replace("/([a-z])([A-Z])/", "$1_$2", $value));
+                            }
+                        }
+                    }
+
+                    return $data;
+
+                }
+
+            /********************************************************************************
+             * ARRAY KEYS TO SNAKE
+             * @param array $data
+             * @return array
+             ********************************************************************************/
+
+                public static function arrayKeysToSnake(array $data): array {
+
+                    foreach ($data as $key => $value) {
+                        if (!self::isInteger($key)) {
+
+                            $newKey        = strtolower(preg_replace("/([a-z])([A-Z])/", "$1_$2", $key));
+                            $data[$newKey] = $value;
+
+                            if ($key !== $newKey) {
+                                unset($data[$key]);
+                            }
+
+                        }
+                    }
+
+                    return $data;
+
+                }
+
+            /********************************************************************************
              * SWAP MULTIPLE SPACES FOR ONE
              * @param string $string value to be converted to camel case.
              * @return string
