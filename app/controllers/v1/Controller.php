@@ -12,6 +12,7 @@
 
             protected string $requestBody;
             protected array $requestUrlValues;
+            private array|false $requestHeaders;
             protected string $response;
 
             const HTTP_ERRORS = [
@@ -68,23 +69,27 @@
 
             public function __construct(bool $authorizationRequired, array $requestUrlValues, bool $useCors = TRUE) {
 
-                // SET URL VALUES | SET CONTENT TYPE HEADER
+                // GET - URL VALUES & REQUEST HEADERS | SET CONTENT TYPE HEADER
 
                     $this->requestUrlValues = $requestUrlValues;
+                    $this->requestHeaders   = apache_request_headers();
+
                     header('Content-Type: application/json');
 
-                // SET CORS HEADERS
+                // SET CORS HEADERS -> HANDLE PREFLIGHT REQUESTS
 
                     if ($useCors) {
 
                         header('Access-Control-Allow-Origin: *');
 
-                        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-
-                            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+                        if ($this->isCorsPreflightRequest()) {
+                            $this->response = '';
+                            header('Connection: Keep-Alive');
+                            header('Access-Control-Allow-Methods: *');
                             header('Access-Control-Max-Age: 604800');
                             header('Access-Control-Allow-Headers: Authorization');
-
+                            header("HTTP/1.1 200 OK");
+                            return;
                         }
 
                     }
@@ -124,7 +129,7 @@
 
                 // HANDLE EMPTY RESPONSE
 
-                    if (empty($this->response)) {
+                    if (empty($this->response)  && !$this->isCorsPreflightRequest()) {
                         $this->setResponse([], 500, 'Internal Server Error');
                     }
 
@@ -199,6 +204,24 @@
                 // SET CLASS RESPONSE VARIABLE AS JSON STRING
 
                     $this->response = json_encode($response);
+
+            }
+            
+        /********************************************************************************
+         * IS CORS REQUEST METHOD
+         * @return bool
+         ********************************************************************************/
+
+            private function isCorsPreflightRequest(): bool {
+
+                return (
+                    is_array($this->requestHeaders) &&
+                    $_SERVER['REQUEST_METHOD'] === 'OPTIONS' &&
+                    (
+                        array_key_exists('Access-Control-Request-Method', $this->requestHeaders) ||
+                        array_key_exists('access-control-request-method', $this->requestHeaders)
+                    )
+                );
 
             }
 
