@@ -59,8 +59,8 @@ if [[ -d app/vendor ]] && [[ -f .env ]]; then
   if [[ $1 = "stop" ]] || [[ $1 = "restart" ]]; then
 
     echo -e "Stopping & removing containers......"
-    eval docker stop $(docker ps -a -q --filter ancestor="$DOCKER_APP" --format=\"{{.ID}}\")
-    eval docker rm $(docker ps -a -q --filter ancestor="$DOCKER_APP" --format=\"{{.ID}}\")
+    eval docker stop "\$(docker ps -a -q --filter ancestor=$DOCKER_APP --format=\"{{.ID}}\")"
+    eval docker rm "\$(docker ps -a -q --filter ancestor=$DOCKER_APP --format=\"{{.ID}}\")"
 
     if [[ $1 = "stop" ]]; then
       exit
