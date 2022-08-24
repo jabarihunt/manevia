@@ -1,20 +1,5 @@
 #!/bin/bash
 
-# STOP ALL RUNNING CONTAINERS IF stop OR restart REQUESTED
-if [[ $1 = "stop" ]] || [[ $1 = "restart" ]]; then
-  echo -e "Stopping all running containers......"
-  # shellcheck disable=SC2046
-  eval docker stop $(docker ps -a -q)
-
-  echo -e "Removing all stopped containers......"
-  # shellcheck disable=SC2046
-  eval docker rm $(docker ps -a -q)
-
-  if [[ $1 = "stop" ]]; then
-    exit
-  fi
-fi
-
 # RUN COMPOSER IF VENDOR DIRECTORY DOESN'T EXIST
 if [[ ! -d app/vendor ]] && [[ -x "$(which composer)" ]]; then
   echo -e "\nMANEVIA: Running Composer...\n"
@@ -36,7 +21,6 @@ fi
 
 # BUILD & RUN DOCKER INSTANCE
 if [[ -d app/vendor ]] && [[ -f .env ]]; then
-  echo -e "MANEVIA: Starting Docker...\n"
 
   # CREATE BUILD & RUN STRINGS
   dockerBuildString="docker build ."
@@ -71,11 +55,23 @@ if [[ -d app/vendor ]] && [[ -f .env ]]; then
 
   done < .env
 
-  dockerRunString="$dockerRunString $DOCKER_APP"
+  # STOP ALL RUNNING CONTAINERS IF stop OR restart REQUESTED
+  if [[ $1 = "stop" ]] || [[ $1 = "restart" ]]; then
 
-  # BUILD & RUN DOCKER
+    echo -e "Stopping & removing containers......"
+    eval docker stop $(docker ps -a -q --filter ancestor="$DOCKER_APP" --format=\"{{.ID}}\")
+    eval docker rm $(docker ps -a -q --filter ancestor="$DOCKER_APP" --format=\"{{.ID}}\")
+
+    if [[ $1 = "stop" ]]; then
+      exit
+    fi
+
+  fi
+
+  # BUILD & RUN CONTAINER
+  echo -e "MANEVIA: Starting Docker...\n"
   eval "$dockerBuildString"
-  eval "$dockerRunString"
+  eval "$dockerRunString $DOCKER_APP"
 
 else
   echo -e "MANEVIA: Missing app/vendor directory or .env file"
