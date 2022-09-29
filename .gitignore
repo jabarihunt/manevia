@@ -178,5 +178,8 @@ nbactions.xml
 ### Phinx ###
 phinx.yml
 
+### Composer ###
+app/vendor/
+
 ### Manevia ###
 backup/cache/*.php
