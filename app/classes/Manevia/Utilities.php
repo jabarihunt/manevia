@@ -103,12 +103,9 @@
                 public static function snakeToCamel(string $value, bool $firstLetterUpper = FALSE): string {
 
                     if (strlen($value) > 0) {
-
                         $value = str_replace('_', ' ', strtolower($value));
                         $value = str_replace(' ', '', ucwords($value));
-
-                        if (!$firstLetterUpper) {$value = lcfirst($value);}
-
+                        $value = $firstLetterUpper ? ucfirst($value) : lcfirst($value);
                     }
 
                     return $value;
@@ -125,14 +122,9 @@
                 public static function slugToCamel(string $value, bool $firstLetterUpper = FALSE): string {
 
                     if (strlen($value) > 0) {
-
                         $value = str_replace('-', ' ', strtolower($value));
                         $value = str_replace(' ', '', ucwords($value));
-
-                        if (!$firstLetterUpper) {
-                            $value = lcfirst($value);
-                        }
-
+                        $value = $firstLetterUpper ? ucfirst($value) : lcfirst($value);
                     }
 
                     return $value;

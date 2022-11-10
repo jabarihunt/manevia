@@ -185,13 +185,13 @@
 
                     $response = [];
 
-                    if ($httpCode === 200 && !empty($data)) {
+                    if ($httpCode === 200) {
 
                         header("HTTP/1.1 200 OK");
 
                         $response = [
                             'status' => 'success',
-                            'data'   => $data
+                            'data'   => $data ?? []
                         ];
 
                     } else {
