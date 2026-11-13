@@ -9,7 +9,7 @@
 
 # Use the official PHP 8 image.
 # https://hub.docker.com/_/php
-FROM php:8.0.11-apache
+FROM php:8.5.12-apache
 
 # Install PHP extensions & Apache Modules
 # Remove old Apache configuration
